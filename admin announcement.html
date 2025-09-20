@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Manage Announcements</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .admin-panel {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            animation: slideInUp 1s ease-out 0.3s both;
+        }
+
+        .panel-section {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #333;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ff6b35;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.95rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #eee;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: #ff6b35;
+            box-shadow: 0 0 0 3px rgba(255,107,53,0.1);
+        }
+
+        .form-textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .form-checkbox {
+            width: 18px;
+            height: 18px;
+            accent-color: #ff6b35;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-bottom: 10px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.3);
+        }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+            transform: translateY(-2px);
+        }
+
+        .announcements-list {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .announcement-item {
+            background: linear-gradient(45deg, rgba(255,107,53,0.05), rgba(247,147,30,0.05));
+            border-left: 4px solid #ff6b35;
+            border-radius: 0 10px 10px 0;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .announcement-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(255,107,53,0.1);
+        }
+
+        .announcement-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .announcement-date {
+            color: #ff6b35;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .priority-badge {
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .priority-high { background: rgba(255, 77, 77, 0.1); color: #ff4d4d; }
+        .priority-medium { background: rgba(255, 193, 7, 0.1); color: #ffc107; }
+        .priority-low { background: rgba(40, 167, 69, 0.1); color: #28a745; }
+
+        .announcement-title {
+            font-size: 1.1rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .announcement-description {
+            color: #666;
+            font-size: 0.9rem;
+            line-height: 1.4;
+            margin-bottom: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .announcement-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .message {
+            padding: 12px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        .success { background: rgba(40, 167, 69, 0.1); color: #28a745; border-left: 4px solid #28a745; }
+        .error { background: rgba(220, 53, 69, 0.1); color: #dc3545; border-left: 4px solid #dc3545; }
+
+        .empty-state {
+            text-align: center;
+            color: #666;
+            padding: 40px;
+            font-style: italic;
+        }
+
+        .connection-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            z-index: 1000;
+        }
+
+        .status-connected {
+            background: rgba(40, 167, 69, 0.1);
+            color: #28a745;
+            border: 1px solid rgba(40, 167, 69, 0.2);
+        }
+
+        .status-disconnected {
+            background: rgba(220, 53, 69, 0.1);
+            color: #dc3545;
+            border: 1px solid rgba(220, 53, 69, 0.2);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .admin-panel { grid-template-columns: 1fr; gap: 20px; }
+            .header h1 { font-size: 2rem; }
+            .panel-section { padding: 20px; }
+            .btn { width: 100%; margin-right: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Connection Status Indicator -->
+    <div class="connection-status status-disconnected" id="connectionStatus">
+        🔴 Connecting...
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Admin Panel - Announcements</h1>
+            <p>Create and manage school announcements</p>
+        </div>
+
+        <div class="admin-panel">
+            <!-- Create Announcement Form -->
+            <div class="panel-section">
+                <h2 class="section-title">Create New Announcement</h2>
+
+                <div class="message" id="message"></div>
+
+                <form id="announcementForm">
+                    <div class="form-group">
+                        <label class="form-label">Announcement Title *</label>
+                        <input type="text" class="form-input" id="title" required placeholder="Enter announcement title">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Description *</label>
+                        <textarea class="form-textarea" id="description" required placeholder="Enter detailed description"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Date *</label>
+                        <input type="date" class="form-input" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Priority *</label>
+                        <select class="form-select" id="priority" required>
+                            <option value="">Select Priority</option>
+                            <option value="low">Low</option>
+                            <option value="medium">Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+
+                    <div class="checkbox-group">
+                        <input type="checkbox" class="form-checkbox" id="isNew">
+                        <label for="isNew">Mark as New</label>
+                    </div>
+
+                    <div style="margin-top: 25px;">
+                        <button type="submit" class="btn btn-primary" id="submitBtn">Publish Announcement</button>
+                        <button type="button" class="btn btn-secondary" onclick="clearForm()">Clear Form</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Announcements List -->
+            <div class="panel-section">
+                <h2 class="section-title">Published Announcements</h2>
+                <div class="announcements-list" id="announcementsList">
+                    <div class="empty-state">Loading announcements...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Firebase Integration
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+        import { getFirestore, collection, addDoc, deleteDoc, doc, query, orderBy, onSnapshot, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+            authDomain: "vidhyashree-mlr.firebaseapp.com",
+            projectId: "vidhyashree-mlr",
+            storageBucket: "vidhyashree-mlr.firebasestorage.app",
+            messagingSenderId: "469584837803",
+            appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+            measurementId: "G-LYEYRP433X"
+        };
+
+        let app, db;
+        let announcements = [];
+        let isConnected = false;
+
+        // Initialize Firebase
+        async function initializeFirebase() {
+            try {
+                app = initializeApp(firebaseConfig);
+                db = getFirestore(app);
+                console.log('Firebase initialized successfully');
+                updateConnectionStatus(true);
+                return true;
+            } catch (error) {
+                console.error('Firebase initialization failed:', error);
+                updateConnectionStatus(false);
+                return false;
+            }
+        }
+
+        // Update connection status
+        function updateConnectionStatus(connected) {
+            const statusEl = document.getElementById('connectionStatus');
+            isConnected = connected;
+            
+            if (connected) {
+                statusEl.className = 'connection-status status-connected';
+                statusEl.textContent = '🟢 Connected';
+            } else {
+                statusEl.className = 'connection-status status-disconnected';
+                statusEl.textContent = '🔴 Disconnected';
+            }
+        }
+
+        // Load announcements with real-time updates
+        function loadAnnouncements() {
+            if (!db) {
+                console.error('Database not initialized');
+                return;
+            }
+
+            try {
+                const q = query(collection(db, "announcements"), orderBy("date", "desc"));
+                
+                // Real-time listener
+                const unsubscribe = onSnapshot(q, (querySnapshot) => {
+                    announcements = [];
+                    querySnapshot.forEach((doc) => {
+                        const data = doc.data();
+                        announcements.push({
+                            id: doc.id,
+                            title: data.title || 'Untitled',
+                            description: data.description || 'No description',
+                            date: data.date || new Date().toISOString().split('T')[0],
+                            priority: data.priority || 'medium',
+                            isNew: data.isNew || false,
+                            createdAt: data.createdAt || new Date().toISOString()
+                        });
+                    });
+                    
+                    console.log(`Loaded ${announcements.length} announcements`);
+                    window.announcements = announcements;
+                    displayAnnouncements();
+                    updateConnectionStatus(true);
+                }, (error) => {
+                    console.error("Error loading announcements:", error);
+                    updateConnectionStatus(false);
+                    showMessage("Error loading announcements: " + error.message, "error");
+                });
+
+                // Store unsubscribe function globally
+                window.unsubscribeAnnouncements = unsubscribe;
+                
+            } catch (error) {
+                console.error('Error setting up listener:', error);
+                updateConnectionStatus(false);
+                showMessage("Failed to setup real-time updates", "error");
+            }
+        }
+
+        // Add announcement
+        async function addAnnouncement(data) {
+            if (!db) {
+                showMessage("Database not connected", "error");
+                return false;
+            }
+
+            try {
+                // Add server timestamp
+                const docData = {
+                    ...data,
+                    createdAt: serverTimestamp(),
+                    updatedAt: serverTimestamp()
+                };
+
+                const docRef = await addDoc(collection(db, "announcements"), docData);
+                console.log("Document written with ID: ", docRef.id);
+                showMessage("Announcement published successfully!", "success");
+                return true;
+            } catch (error) {
+                console.error("Error adding document: ", error);
+                showMessage("Error publishing announcement: " + error.message, "error");
+                return false;
+            }
+        }
+
+        // Delete announcement
+        async function deleteAnnouncement(id) {
+            if (!db) {
+                showMessage("Database not connected", "error");
+                return false;
+            }
+
+            try {
+                await deleteDoc(doc(db, "announcements", id));
+                console.log("Document deleted: ", id);
+                showMessage("Announcement deleted successfully!", "success");
+                return true;
+            } catch (error) {
+                console.error("Error deleting document: ", error);
+                showMessage("Error deleting announcement: " + error.message, "error");
+                return false;
+            }
+        }
+
+        // Make functions available globally
+        window.addAnnouncement = addAnnouncement;
+        window.deleteAnnouncement = deleteAnnouncement;
+        window.announcements = announcements;
+
+        // Initialize everything
+        initializeFirebase().then((success) => {
+            if (success) {
+                loadAnnouncements();
+            } else {
+                showMessage("Failed to initialize Firebase. Please refresh the page.", "error");
+            }
+        });
+    </script>
+
+    <script>
+        // Set today's date on load
+        document.addEventListener('DOMContentLoaded', function() {
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+        });
+
+        // Form submission handler
+        document.getElementById('announcementForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const submitBtn = document.getElementById('submitBtn');
+            const originalText = submitBtn.textContent;
+            
+            // Get form data
+            const data = {
+                title: document.getElementById('title').value.trim(),
+                description: document.getElementById('description').value.trim(),
+                date: document.getElementById('date').value,
+                priority: document.getElementById('priority').value,
+                isNew: document.getElementById('isNew').checked
+            };
+
+            // Validation
+            if (!data.title || !data.description || !data.date || !data.priority) {
+                showMessage("Please fill all required fields", "error");
+                return;
+            }
+
+            // Update button state
+            submitBtn.textContent = 'Publishing...';
+            submitBtn.disabled = true;
+
+            try {
+                const success = await window.addAnnouncement(data);
+                if (success) {
+                    clearForm();
+                }
+            } catch (error) {
+                console.error('Submission error:', error);
+                showMessage("Unexpected error occurred", "error");
+            } finally {
+                // Reset button state
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+            }
+        });
+
+        function displayAnnouncements() {
+            const list = document.getElementById('announcementsList');
+            
+            if (!window.announcements || window.announcements.length === 0) {
+                list.innerHTML = '<div class="empty-state">No announcements found.</div>';
+                return;
+            }
+
+            list.innerHTML = window.announcements.map(announcement => {
+                const formattedDate = formatDate(announcement.date);
+                const badgeText = announcement.priority.toUpperCase() + (announcement.isNew ? ' • NEW' : '');
+                
+                return `
+                    <div class="announcement-item">
+                        <div class="announcement-meta">
+                            <div class="announcement-date">${formattedDate}</div>
+                            <span class="priority-badge priority-${announcement.priority}">
+                                ${badgeText}
+                            </span>
+                        </div>
+                        <div class="announcement-title">${announcement.title}</div>
+                        <div class="announcement-description">${announcement.description}</div>
+                        <div class="announcement-actions">
+                            <button class="btn btn-danger" onclick="confirmDelete('${announcement.id}')">
+                                Delete
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function formatDate(dateString) {
+            try {
+                return new Date(dateString).toLocaleDateString('en-US', { 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+            } catch (error) {
+                return dateString;
+            }
+        }
+
+        function showMessage(text, type) {
+            const message = document.getElementById('message');
+            message.textContent = text;
+            message.className = `message ${type}`;
+            message.style.display = 'block';
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                message.style.display = 'none';
+            }, 5000);
+        }
+
+        function clearForm() {
+            const form = document.getElementById('announcementForm');
+            form.reset();
+            document.getElementById('date').value = new Date().toISOString().split('T')[0];
+        }
+
+        function confirmDelete(id) {
+            if (confirm('Are you sure you want to delete this announcement? This action cannot be undone.')) {
+                window.deleteAnnouncement(id);
+            }
+        }
+
+        // Handle page visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (!document.hidden && window.announcements) {
+                console.log('Page became visible, data is current');
+            }
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', function() {
+            if (window.unsubscribeAnnouncements) {
+                window.unsubscribeAnnouncements();
+            }
+        });
+    </script>
+</body>
+</html>

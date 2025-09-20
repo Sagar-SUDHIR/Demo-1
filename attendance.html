@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Attendance Management - Vidyasshree Shikshana Kendra</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    .section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideUp 0.8s ease forwards;
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      color: #667eea;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Search and Selection Styles */
+    .search-container {
+      position: relative;
+      margin-bottom: 2rem;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 25px;
+      font-size: 1rem;
+      background: white;
+      transition: all 0.3s ease;
+    }
+
+    .search-input:focus {
+      border-color: #667eea;
+      outline: none;
+      box-shadow: 0 0 10px rgba(102,126,234,0.3);
+    }
+
+    .search-results {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+      z-index: 100;
+      display: none;
+    }
+
+    .search-result-item {
+      padding: 1rem;
+      border-bottom: 1px solid #f0f0f0;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .search-result-item:hover {
+      background: #f8f9fa;
+    }
+
+    .search-result-item:last-child {
+      border-bottom: none;
+    }
+
+    .selected-students {
+      margin-bottom: 2rem;
+    }
+
+    .student-chip {
+      display: inline-block;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      margin: 0.25rem;
+      font-size: 0.9rem;
+      position: relative;
+      animation: chipIn 0.3s ease;
+    }
+
+    @keyframes chipIn {
+      from { opacity: 0; transform: scale(0.8); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .chip-remove {
+      margin-left: 0.5rem;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .save-selection-btn {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 2rem;
+    }
+
+    .save-selection-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(46,204,113,0.4);
+    }
+
+    .save-selection-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    /* Class List Card Styles */
+    .class-list-card {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+      position: relative;
+    }
+
+    .class-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .class-title {
+      font-size: 1.5rem;
+      color: #667eea;
+      font-weight: bold;
+    }
+
+    .class-actions {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .edit-btn, .promote-btn {
+      padding: 0.5rem 1rem;
+      border: none;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .edit-btn {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white;
+    }
+
+    .promote-btn {
+      background: linear-gradient(135deg, #e74c3c, #c0392b);
+      color: white;
+    }
+
+    .student-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .student-item {
+      background: #f8f9fa;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 1rem;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .student-item:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    /* Daily Attendance Styles */
+    .date-selector {
+      margin-bottom: 2rem;
+    }
+
+    .date-input {
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      font-size: 1rem;
+      margin-right: 1rem;
+    }
+
+    .attendance-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .select-all-btn {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .select-all-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(52,152,219,0.4);
+    }
+
+    .attendance-stats {
+      display: flex;
+      gap: 2rem;
+      font-weight: 600;
+    }
+
+    .stat-present { color: #27ae60; }
+    .stat-absent { color: #e74c3c; }
+
+    .attendance-list {
+      margin-bottom: 2rem;
+    }
+
+    .attendance-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .attendance-item:hover {
+      border-color: #667eea;
+    }
+
+    .attendance-item.present {
+      border-color: #27ae60;
+      background: rgba(46,204,113,0.05);
+    }
+
+    .attendance-item.absent {
+      border-color: #e74c3c;
+      background: rgba(231,76,60,0.05);
+    }
+
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .student-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .attendance-checkbox {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+    }
+
+    .save-attendance-btn {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-bottom: 2rem;
+    }
+
+    .save-attendance-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(46,204,113,0.4);
+    }
+
+    /* Calendar Styles */
+    .calendar-container {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-top: 2rem;
+    }
+
+    .calendar-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .calendar-title {
+      font-size: 1.5rem;
+      color: #667eea;
+      font-weight: bold;
+    }
+
+    .calendar-nav {
+      display: flex;
+      gap: 1rem;
+    }
+
+    .calendar-nav-btn {
+      background: #667eea;
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .calendar-nav-btn:hover {
+      background: #764ba2;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #e1e8ed;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .calendar-day {
+      background: white;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .calendar-day:hover {
+      background: #f8f9fa;
+    }
+
+    .calendar-day.has-attendance {
+      background: rgba(46,204,113,0.1);
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    .calendar-day.selected {
+      background: #667eea;
+      color: white;
+    }
+
+    .calendar-day.other-month {
+      color: #bdc3c7;
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .message.success {
+      background: rgba(46,204,113,0.1);
+      color: #27ae60;
+      border: 2px solid rgba(46,204,113,0.3);
+    }
+
+    .message.error {
+      background: rgba(231,76,60,0.1);
+      color: #c0392b;
+      border: 2px solid rgba(231,76,60,0.3);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      max-width: 300px;
+      display: none;
+      z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+      .attendance-controls {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      
+      .class-header {
+        flex-direction: column;
+        align-items: stretch;
+        text-align: center;
+      }
+      
+      .calendar-day {
+        min-height: 40px;
+        padding: 0.5rem;
+      }
+      
+      .student-list {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Attendance Management</h1>
+    <p id="class-info">Loading class information...</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn active" onclick="switchSection('selection')">Student Selection</button>
+    <button class="nav-btn" onclick="switchSection('attendance')">Daily Attendance</button>
+    <a href="admin.html" class="nav-btn">Back to Dashboard</a>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Student Selection Section -->
+    <div id="selection-section" class="section active">
+      <h2 class="section-title">Select Students for Your Class</h2>
+      <div id="message-container-selection"></div>
+
+      <div class="search-container">
+        <input type="text" class="search-input" id="student-search" placeholder="Search for students by name or email..." oninput="searchStudents()">
+        <div class="search-results" id="search-results"></div>
+      </div>
+
+      <div class="selected-students">
+        <h3>Selected Students:</h3>
+        <div id="selected-students-container">
+          <p style="color: #666; margin: 1rem 0;">No students selected yet</p>
+        </div>
+      </div>
+
+      <button class="save-selection-btn" onclick="saveStudentSelection()" disabled>
+        Save Class List
+      </button>
+
+      <!-- Existing Class List -->
+      <div id="existing-class-list"></div>
+    </div>
+
+    <!-- Daily Attendance Section -->
+    <div id="attendance-section" class="section">
+      <h2 class="section-title">Daily Attendance</h2>
+      <div id="message-container-attendance"></div>
+
+      <div class="date-selector">
+        <label for="attendance-date">Select Date:</label>
+        <input type="date" id="attendance-date" class="date-input" onchange="loadAttendanceForDate()">
+      </div>
+
+      <div class="attendance-controls">
+        <button class="select-all-btn" onclick="selectAllStudents()">Select All</button>
+        <div class="attendance-stats">
+          <span class="stat-present">Present: <span id="present-count">0</span></span>
+          <span class="stat-absent">Absent: <span id="absent-count">0</span></span>
+        </div>
+      </div>
+
+      <div class="attendance-list" id="attendance-list">
+        <div class="loading">Please set up your class list first in the Student Selection section</div>
+      </div>
+
+      <button class="save-attendance-btn" onclick="saveAttendance()" style="display: none;">
+        Save Attendance
+      </button>
+
+      <!-- Calendar -->
+      <div class="calendar-container">
+        <div class="calendar-header">
+          <div class="calendar-title" id="calendar-title">Loading...</div>
+          <div class="calendar-nav">
+            <button class="calendar-nav-btn" onclick="changeMonth(-1)">← Previous</button>
+            <button class="calendar-nav-btn" onclick="changeMonth(1)">Next →</button>
+          </div>
+        </div>
+        <div class="calendar-grid" id="calendar-grid">
+          <!-- Calendar will be populated by JavaScript -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Debug Info -->
+  <div class="debug-info" id="debugInfo"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, collection, getDocs, doc, setDoc, getDoc, updateDoc, query, where, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+      authDomain: "vidhyashree-mlr.firebaseapp.com",
+      projectId: "vidhyashree-mlr",
+      storageBucket: "vidhyashree-mlr.firebasestorage.app",
+      messagingSenderId: "469584837803",
+      appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+      measurementId: "G-LYEYRP433X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let teacherData = null;
+    let allStudents = [];
+    let selectedStudents = [];
+    let classStudents = [];
+    let currentDate = new Date().toISOString().split('T')[0];
+    let currentMonth = new Date().getMonth();
+    let currentYear = new Date().getFullYear();
+    let attendanceData = {};
+
+    // Debug function
+    function debug(message) {
+      console.log('ATTENDANCE DEBUG:', message);
+      const debugInfo = document.getElementById('debugInfo');
+      debugInfo.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+      debugInfo.style.display = 'block';
+      setTimeout(() => {
+        debugInfo.style.display = 'none';
+      }, 5000);
+    }
+
+    // Initialize
+    document.addEventListener('DOMContentLoaded', async () => {
+      document.getElementById('attendance-date').value = currentDate;
+      onAuthStateChanged(auth, async (user) => {
+        if (user) {
+          currentUser = user;
+          debug(`User logged in: ${user.uid}`);
+          await loadTeacherData();
+          await loadAllStudents();
+          await loadClassList();
+          await loadAttendanceForDate();
+          renderCalendar();
+        } else {
+          debug('User not authenticated - redirecting');
+          window.location.href = 'admin.html';
+        }
+      });
+    });
+
+    async function loadTeacherData() {
+      try {
+        debug('Loading teacher data...');
+        
+        // First try to get from admin-requests
+        const adminRequestsQuery = query(
+          collection(db, 'admin-requests'), 
+          where('userId', '==', currentUser.uid),
+          where('status', '==', 'approved')
+        );
+        const adminSnapshot = await getDocs(adminRequestsQuery);
+        
+        if (!adminSnapshot.empty) {
+          teacherData = adminSnapshot.docs[0].data();
+          teacherData.docId = adminSnapshot.docs[0].id;
+          debug(`Teacher data loaded from admin-requests: ${JSON.stringify(teacherData)}`);
+        } else {
+          // Try to get from users collection
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            if (userData.userType === 'admin' && userData.adminStatus === 'approved') {
+              teacherData = userData;
+              teacherData.userId = currentUser.uid;
+              debug(`Teacher data loaded from users: ${JSON.stringify(teacherData)}`);
+            }
+          }
+        }
+
+        if (teacherData) {
+          document.getElementById('class-info').textContent = 
+            `Teacher: ${teacherData.name || 'Unknown'} | Subject: ${teacherData.subject || 'Not Specified'}`;
+        } else {
+          debug('No approved teacher data found');
+          showMessage('Teacher account not found or not approved', 'error', 'selection');
+        }
+      } catch (error) {
+        debug(`Error loading teacher data: ${error.message}`);
+        console.error('Error loading teacher data:', error);
+      }
+    }
+
+    async function loadAllStudents() {
+      try {
+        debug('Loading all students...');
+        
+        // Load from users collection where userType = 'student'
+        const studentsQuery = query(collection(db, 'users'), where('userType', '==', 'student'));
+        const snapshot = await getDocs(studentsQuery);
+        
+        allStudents = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        
+        debug(`Loaded ${allStudents.length} students`);
+        console.log('Students loaded:', allStudents);
+      } catch (error) {
+        debug(`Error loading students: ${error.message}`);
+        console.error('Error loading students:', error);
+      }
+    }
+
+    async function loadClassList() {
+      if (!teacherData || !teacherData.userId) {
+        debug('No teacher data available for loading class list');
+        return;
+      }
+      
+      try {
+        debug(`Loading class list for teacher: ${teacherData.userId}`);
+        const classDoc = await getDoc(doc(db, 'class-lists', `${teacherData.userId}-classlist`));
+        
+        if (classDoc.exists()) {
+          const classData = classDoc.data();
+          classStudents = classData.students || [];
+          debug(`Class list loaded with ${classStudents.length} students`);
+          renderExistingClassList();
+          renderAttendanceList();
+        } else {
+          debug('No existing class list found');
+          classStudents = [];
+          renderExistingClassList();
+          renderAttendanceList();
+        }
+      } catch (error) {
+        debug(`Error loading class list: ${error.message}`);
+        console.error('Error loading class list:', error);
+      }
+    }
+
+    function renderExistingClassList() {
+      const container = document.getElementById('existing-class-list');
+      
+      if (classStudents.length === 0) {
+        container.innerHTML = '';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="class-list-card">
+          <div class="class-header">
+            <div class="class-title">Current Class List (${classStudents.length} students)</div>
+            <div class="class-actions">
+              <button class="edit-btn" onclick="editClassList()">Edit List</button>
+            </div>
+          </div>
+          <div class="student-list">
+            ${classStudents.map(student => `
+              <div class="student-item">
+                <strong>${student.name}</strong><br>
+                <small>Email: ${student.email}</small><br>
+                <small>ID: ${student.studentId || student.id}</small>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    // Global functions
+    window.switchSection = function(section) {
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(`${section}-section`).classList.add('active');
+    };
+
+    window.searchStudents = function() {
+      const searchTerm = document.getElementById('student-search').value.toLowerCase();
+      const results = document.getElementById('search-results');
+      
+      if (searchTerm.length < 2) {
+        results.style.display = 'none';
+        return;
+      }
+
+      const filteredStudents = allStudents.filter(student => 
+        student.name.toLowerCase().includes(searchTerm) || 
+        student.email.toLowerCase().includes(searchTerm) ||
+        (student.studentId && student.studentId.toLowerCase().includes(searchTerm))
+      );
+
+      debug(`Search for "${searchTerm}" found ${filteredStudents.length} results`);
+
+      results.innerHTML = filteredStudents.map(student => `
+        <div class="search-result-item" onclick="selectStudent('${student.id}')">
+          <strong>${student.name}</strong> - ${student.email}<br>
+          <small>ID: ${student.studentId || student.id}</small>
+        </div>
+      `).join('');
+
+      results.style.display = filteredStudents.length > 0 ? 'block' : 'none';
+    };
+
+    window.selectStudent = function(studentId) {
+      const student = allStudents.find(s => s.id === studentId);
+      if (!student || selectedStudents.find(s => s.id === studentId)) return;
+
+      selectedStudents.push(student);
+      debug(`Student selected: ${student.name}`);
+      renderSelectedStudents();
+      document.getElementById('search-results').style.display = 'none';
+      document.getElementById('student-search').value = '';
+    };
+
+    function renderSelectedStudents() {
+      const container = document.getElementById('selected-students-container');
+      const saveBtn = document.querySelector('.save-selection-btn');
+      
+      if (selectedStudents.length === 0) {
+        container.innerHTML = '<p style="color: #666; margin: 1rem 0;">No students selected yet</p>';
+        saveBtn.disabled = true;
+        return;
+      }
+
+      container.innerHTML = selectedStudents.map(student => `
+        <span class="student-chip">
+          ${student.name} (${student.email})
+          <span class="chip-remove" onclick="removeStudent('${student.id}')">×</span>
+        </span>
+      `).join('');
+      
+      saveBtn.disabled = false;
+    }
+
+    window.removeStudent = function(studentId) {
+      selectedStudents = selectedStudents.filter(s => s.id !== studentId);
+      renderSelectedStudents();
+    };
+
+    window.saveStudentSelection = async function() {
+      if (!teacherData || selectedStudents.length === 0) {
+        debug('Cannot save - no teacher data or students selected');
+        return;
+      }
+
+      try {
+        debug(`Saving ${selectedStudents.length} students to class list`);
+        showMessage('Saving class list...', 'success', 'selection');
+        
+        await setDoc(doc(db, 'class-lists', `${teacherData.userId}-classlist`), {
+          teacherId: teacherData.userId,
+          teacherName: teacherData.name,
+          students: selectedStudents,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
+
+        classStudents = [...selectedStudents];
+        selectedStudents = [];
+        renderSelectedStudents();
+        renderExistingClassList();
+        renderAttendanceList();
+        
+        showMessage('Class list saved successfully!', 'success', 'selection');
+        debug('Class list saved successfully');
+      } catch (error) {
+        debug(`Error saving class list: ${error.message}`);
+        showMessage('Error saving class list: ' + error.message, 'error', 'selection');
+      }
+    };
+
+    window.editClassList = function() {
+      selectedStudents = [...classStudents];
+      renderSelectedStudents();
+      window.switchSection('selection');
+    };
+
+    function renderAttendanceList() {
+      const container = document.getElementById('attendance-list');
+      const saveBtn = document.querySelector('.save-attendance-btn');
+      
+      if (classStudents.length === 0) {
+        container.innerHTML = '<div class="loading">Please set up your class list first in the Student Selection section</div>';
+        saveBtn.style.display = 'none';
+        return;
+      }
+
+      container.innerHTML = classStudents.map(student => {
+        const isPresent = attendanceData[currentDate] && attendanceData[currentDate][student.id];
+        return `
+          <div class="attendance-item ${isPresent ? 'present' : 'absent'}">
+            <div class="student-info">
+              <div class="student-avatar">${student.name.charAt(0).toUpperCase()}</div>
+              <div>
+                <strong>${student.name}</strong><br>
+                <small>Email: ${student.email}</small>
+              </div>
+            </div>
+            <input type="checkbox" class="attendance-checkbox" 
+                   id="attendance-${student.id}" 
+                   ${isPresent ? 'checked' : ''}
+                   onchange="updateAttendanceStats()">
+          </div>
+        `;
+      }).join('');
+      
+      saveBtn.style.display = 'block';
+      updateAttendanceStats();
+    }
+
+    window.selectAllStudents = function() {
+      const checkboxes = document.querySelectorAll('.attendance-checkbox');
+      checkboxes.forEach(checkbox => {
+        checkbox.checked = true;
+      });
+      updateAttendanceStats();
+    };
+
+    window.updateAttendanceStats = function() {
+      const checkboxes = document.querySelectorAll('.attendance-checkbox');
+      const presentCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+      const absentCount = checkboxes.length - presentCount;
+      
+      document.getElementById('present-count').textContent = presentCount;
+      document.getElementById('absent-count').textContent = absentCount;
+      
+      // Update visual states
+      checkboxes.forEach(checkbox => {
+        const attendanceItem = checkbox.closest('.attendance-item');
+        if (checkbox.checked) {
+          attendanceItem.classList.add('present');
+          attendanceItem.classList.remove('absent');
+        } else {
+          attendanceItem.classList.add('absent');
+          attendanceItem.classList.remove('present');
+        }
+      });
+    };
+
+    window.loadAttendanceForDate = async function() {
+      currentDate = document.getElementById('attendance-date').value;
+      
+      if (!teacherData || !teacherData.userId) return;
+
+      try {
+        debug(`Loading attendance for date: ${currentDate}`);
+        const attendanceDoc = await getDoc(doc(db, 'attendance', `${teacherData.userId}-${currentDate}`));
+        
+        if (attendanceDoc.exists()) {
+          attendanceData[currentDate] = attendanceDoc.data().attendance || {};
+          debug(`Attendance data found for ${currentDate}`);
+        } else {
+          attendanceData[currentDate] = {};
+          debug(`No attendance data found for ${currentDate}`);
+        }
+        
+        renderAttendanceList();
+        renderCalendar();
+      } catch (error) {
+        debug(`Error loading attendance for date: ${error.message}`);
+        console.error('Error loading attendance for date:', error);
+      }
+    };
+
+    window.saveAttendance = async function() {
+      if (!teacherData || !teacherData.userId || classStudents.length === 0) return;
+
+      try {
+        showMessage('Saving attendance...', 'success', 'attendance');
+        debug(`Saving attendance for ${currentDate}`);
+        
+        const checkboxes = document.querySelectorAll('.attendance-checkbox');
+        const attendance = {};
+        
+        checkboxes.forEach(checkbox => {
+          const studentId = checkbox.id.replace('attendance-', '');
+          attendance[studentId] = checkbox.checked;
+        });
+
+        await setDoc(doc(db, 'attendance', `${teacherData.userId}-${currentDate}`), {
+          teacherId: teacherData.userId,
+          teacherName: teacherData.name,
+          date: currentDate,
+          attendance: attendance,
+          timestamp: new Date().toISOString()
+        });
+
+        attendanceData[currentDate] = attendance;
+        
+        showMessage('Attendance saved successfully!', 'success', 'attendance');
+        debug('Attendance saved successfully');
+        renderCalendar();
+      } catch (error) {
+        debug(`Error saving attendance: ${error.message}`);
+        showMessage('Error saving attendance: ' + error.message, 'error', 'attendance');
+      }
+    };
+
+    // Calendar Functions
+    function renderCalendar() {
+      const grid = document.getElementById('calendar-grid');
+      const title = document.getElementById('calendar-title');
+      
+      const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'];
+      
+      title.textContent = `${monthNames[currentMonth]} ${currentYear}`;
+      
+      const firstDay = new Date(currentYear, currentMonth, 1).getDay();
+      const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+      const daysInPrevMonth = new Date(currentYear, currentMonth, 0).getDate();
+      
+      let calendarHTML = '';
+      
+      // Day headers
+      const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+      dayHeaders.forEach(day => {
+        calendarHTML += `<div class="calendar-day" style="background: #667eea; color: white; font-weight: bold;">${day}</div>`;
+      });
+      
+      // Previous month days
+      for (let i = firstDay - 1; i >= 0; i--) {
+        const day = daysInPrevMonth - i;
+        calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
+      }
+      
+      // Current month days
+      for (let day = 1; day <= daysInMonth; day++) {
+        const dateStr = `${currentYear}-${String(currentMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+        const hasAttendance = attendanceData[dateStr] && Object.keys(attendanceData[dateStr]).length > 0;
+        const isSelected = dateStr === currentDate;
+        
+        let classes = 'calendar-day';
+        if (hasAttendance) classes += ' has-attendance';
+        if (isSelected) classes += ' selected';
+        
+        calendarHTML += `<div class="${classes}" onclick="selectCalendarDate('${dateStr}')">${day}</div>`;
+      }
+      
+      // Next month days to fill the grid
+      const remainingCells = 42 - (firstDay + daysInMonth);
+      for (let day = 1; day <= remainingCells; day++) {
+        calendarHTML += `<div class="calendar-day other-month">${day}</div>`;
+      }
+      
+      grid.innerHTML = calendarHTML;
+    }
+
+    window.changeMonth = function(direction) {
+      currentMonth += direction;
+      if (currentMonth < 0) {
+        currentMonth = 11;
+        currentYear--;
+      } else if (currentMonth > 11) {
+        currentMonth = 0;
+        currentYear++;
+      }
+      renderCalendar();
+    };
+
+    window.selectCalendarDate = function(dateStr) {
+      currentDate = dateStr;
+      document.getElementById('attendance-date').value = dateStr;
+      loadAttendanceForDate();
+    };
+
+    // Utility Functions
+    function showMessage(message, type, section) {
+      const container = document.getElementById(`message-container-${section}`);
+      container.innerHTML = `<div class="message ${type}">${message}</div>`;
+      
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 3000);
+    }
+
+    // Click outside to close search results
+    document.addEventListener('click', function(event) {
+      const searchContainer = document.querySelector('.search-container');
+      const searchResults = document.getElementById('search-results');
+      
+      if (!searchContainer.contains(event.target)) {
+        searchResults.style.display = 'none';
+      }
+    });
+
+  </script>
+</body>
+</html>

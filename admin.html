@@ -1,0 +1,719 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teacher Portal - Vidyasshree Shikshana Kendra</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .dashboard-container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 2rem;
+      right: 2rem;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    .logout-btn:hover {
+      background: rgba(255,255,255,0.3);
+      transform: translateY(-2px);
+    }
+
+    .profile-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      animation: slideUp 0.8s ease forwards;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .profile-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      font-weight: bold;
+    }
+
+    .profile-info {
+      flex: 1;
+    }
+
+    .profile-name {
+      font-size: 2rem;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .profile-role {
+      display: inline-block;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .role-class-teacher {
+      background: rgba(46,204,113,0.1);
+      color: #27ae60;
+      border: 2px solid rgba(46,204,113,0.3);
+    }
+
+    .role-regular-teacher {
+      background: rgba(52,152,219,0.1);
+      color: #2980b9;
+      border: 2px solid rgba(52,152,219,0.3);
+    }
+
+    .profile-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-size: 0.8rem;
+      color: #666;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    .detail-value {
+      font-size: 1rem;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .class-teaching-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      animation: slideUp 0.8s ease forwards 0.1s both;
+    }
+
+    .section-title {
+      color: #667eea;
+      font-size: 1.5rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .class-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 1rem;
+    }
+
+    .class-card {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+    }
+
+    .class-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 8px 25px rgba(102,126,234,0.2);
+      transform: translateY(-2px);
+    }
+
+    .class-card.class-teacher {
+      background: linear-gradient(135deg, rgba(46,204,113,0.1), rgba(39,174,96,0.1));
+      border-color: #27ae60;
+    }
+
+    .class-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .class-type {
+      font-size: 0.8rem;
+      color: #666;
+      text-transform: uppercase;
+    }
+
+    .actions-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      animation: slideUp 0.8s ease forwards 0.2s both;
+    }
+
+    .actions-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .action-card {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      padding: 2rem;
+      text-align: center;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .action-card:hover {
+      box-shadow: 0 8px 25px rgba(102,126,234,0.2);
+      transform: translateY(-2px);
+    }
+
+    .action-attendance {
+      border-color: #e74c3c;
+    }
+    .action-attendance:hover { border-color: #c0392b; }
+
+    .action-marks {
+      border-color: #f39c12;
+    }
+    .action-marks:hover { border-color: #e67e22; }
+
+    .action-disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      background: #f8f9fa;
+    }
+
+    .action-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+    }
+
+    .action-title {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .action-description {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .class-selector {
+      margin: 1rem 0;
+    }
+
+    .class-select {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: white;
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: white;
+      margin: 10% auto;
+      padding: 2rem;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal h3 {
+      color: #667eea;
+      margin-bottom: 1rem;
+    }
+
+    .modal-buttons {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: #f8f9fa;
+      color: #666;
+      border: 2px solid #e1e8ed;
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      font-size: 1.2rem;
+      color: #666;
+    }
+
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .actions-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .logout-btn {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 0 auto 2rem auto;
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="logout-btn" onclick="logout()">Logout</button>
+
+  <div class="header">
+    <h1>Teacher Portal</h1>
+    <p id="welcome-text">Welcome to your teaching dashboard</p>
+  </div>
+
+  <div class="dashboard-container">
+    <!-- Profile Section -->
+    <div class="profile-section">
+      <div class="profile-header">
+        <div class="profile-avatar" id="profile-avatar">T</div>
+        <div class="profile-info">
+          <div class="profile-name" id="teacher-name">Loading...</div>
+          <span class="profile-role" id="teacher-role">Loading...</span>
+        </div>
+      </div>
+      
+      <div class="profile-details" id="teacher-details">
+        <div class="loading">Loading teacher details...</div>
+      </div>
+    </div>
+
+    <!-- Class Teaching Section -->
+    <div class="class-teaching-section">
+      <h2 class="section-title">📚 Your Classes</h2>
+      <div class="class-grid" id="classes-grid">
+        <div class="loading">Loading your assigned classes...</div>
+      </div>
+    </div>
+
+    <!-- Actions Section -->
+    <div class="actions-section">
+      <h2 class="section-title">⚡ Quick Actions</h2>
+      <div class="actions-grid">
+        
+        <!-- Attendance Action -->
+        <div class="action-card action-attendance" id="attendance-action" onclick="openAttendanceModal()">
+          <div class="action-icon">📋</div>
+          <div class="action-title">Mark Attendance</div>
+          <div class="action-description">Record student attendance for your class</div>
+          <div class="class-selector" id="attendance-class-selector" style="display: none;">
+            <select class="class-select" id="attendance-class-select">
+              <option value="">Select Class</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Marks Entry Action -->
+        <a href="admin-result.html" class="action-card action-marks">
+          <div class="action-icon">📝</div>
+          <div class="action-title">Enter Marks</div>
+          <div class="action-description">Input student marks and grades</div>
+        </a>
+
+        <!-- View Students Action -->
+        <a href="admin-leave.html"><div class="action-card" onclick="viewStudents()">
+          <div class="action-icon">👥</div>
+          <div class="action-title">Leave Requests</div>
+          <div class="action-description">See all leave requests of your classes</div>
+        </div></a>
+
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Class Selection Modal for Attendance -->
+  <div id="attendanceModal" class="modal">
+    <div class="modal-content">
+      <h3>Select Class for Attendance</h3>
+      <p>Choose which class you want to mark attendance for:</p>
+      
+      <div class="class-selector">
+        <select class="class-select" id="modal-class-select">
+          <option value="">Select Class</option>
+        </select>
+      </div>
+      
+      <div class="modal-buttons">
+        <button class="btn btn-primary" onclick="goToAttendance()">Proceed to Attendance</button>
+        <button class="btn btn-secondary" onclick="closeAttendanceModal()">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged, signOut } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, doc, getDoc, collection, getDocs, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+      authDomain: "vidhyashree-mlr.firebaseapp.com",
+      projectId: "vidhyashree-mlr",
+      storageBucket: "vidhyashree-mlr.firebasestorage.app",
+      messagingSenderId: "469584837803",
+      appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+      measurementId: "G-LYEYRP433X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let teacherData = null;
+
+    // Check authentication and load teacher data
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        await loadTeacherData();
+      } else {
+        window.location.href = 'login.html';
+      }
+    });
+
+    async function loadTeacherData() {
+      try {
+        // First check admin-requests collection for teacher data
+        const adminRequestsQuery = query(
+          collection(db, 'admin-requests'), 
+          where('userId', '==', currentUser.uid),
+          where('status', '==', 'approved')
+        );
+        const adminSnapshot = await getDocs(adminRequestsQuery);
+        
+        if (!adminSnapshot.empty) {
+          teacherData = adminSnapshot.docs[0].data();
+          teacherData.docId = adminSnapshot.docs[0].id;
+        } else {
+          // Fallback to users collection
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (userDoc.exists()) {
+            teacherData = userDoc.data();
+          }
+        }
+
+        if (teacherData && teacherData.assignmentType) {
+          renderTeacherProfile();
+          renderClasses();
+          setupActions();
+        } else {
+          showNotAssigned();
+        }
+      } catch (error) {
+        console.error('Error loading teacher data:', error);
+        showError();
+      }
+    }
+
+    function renderTeacherProfile() {
+      // Update profile avatar
+      const avatar = document.getElementById('profile-avatar');
+      avatar.textContent = teacherData.name ? teacherData.name.charAt(0).toUpperCase() : 'T';
+
+      // Update name and welcome
+      document.getElementById('teacher-name').textContent = teacherData.name || 'Teacher';
+      document.getElementById('welcome-text').textContent = `Welcome, ${teacherData.name || 'Teacher'}!`;
+
+      // Update role
+      const roleElement = document.getElementById('teacher-role');
+      const roleText = teacherData.assignmentType === 'class-teacher' ? 'Class Teacher' : 'Regular Teacher';
+      roleElement.textContent = roleText;
+      roleElement.className = `profile-role role-${teacherData.assignmentType}`;
+
+      // Update profile details
+      const detailsHtml = `
+        <div class="detail-item">
+          <div class="detail-label">Email</div>
+          <div class="detail-value">${teacherData.email || 'N/A'}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Phone</div>
+          <div class="detail-value">${teacherData.phone || 'N/A'}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Subject</div>
+          <div class="detail-value">${teacherData.subject || 'N/A'}</div>
+        </div>
+        <div class="detail-item">
+          <div class="detail-label">Teacher Type</div>
+          <div class="detail-value">${roleText}</div>
+        </div>
+        ${teacherData.classTeacherOf ? `
+        <div class="detail-item">
+          <div class="detail-label">Class Teacher Of</div>
+          <div class="detail-value">${teacherData.classTeacherOf}</div>
+        </div>
+        ` : ''}
+        <div class="detail-item">
+          <div class="detail-label">Status</div>
+          <div class="detail-value">Approved & Assigned</div>
+        </div>
+      `;
+      
+      document.getElementById('teacher-details').innerHTML = detailsHtml;
+    }
+
+    function renderClasses() {
+      const classesGrid = document.getElementById('classes-grid');
+      let classesHtml = '';
+
+      // Add class teacher class if applicable
+      if (teacherData.assignmentType === 'class-teacher' && teacherData.classTeacherOf) {
+        classesHtml += `
+          <div class="class-card class-teacher">
+            <div class="class-name">${teacherData.classTeacherOf}</div>
+            <div class="class-type">Class Teacher</div>
+          </div>
+        `;
+      }
+
+      // Add teaching classes (this would be expanded to show multiple classes)
+      const teachingClasses = teacherData.teachingClasses || [teacherData.classTeacherOf].filter(Boolean);
+      
+      if (teachingClasses && teachingClasses.length > 0) {
+        teachingClasses.forEach(className => {
+          if (className !== teacherData.classTeacherOf) { // Avoid duplicates
+            classesHtml += `
+              <div class="class-card">
+                <div class="class-name">${className}</div>
+                <div class="class-type">Teaching</div>
+              </div>
+            `;
+          }
+        });
+      }
+
+      if (classesHtml === '') {
+        classesHtml = '<div class="loading">No classes assigned yet</div>';
+      }
+
+      classesGrid.innerHTML = classesHtml;
+    }
+
+    function setupActions() {
+      const attendanceAction = document.getElementById('attendance-action');
+      const attendanceSelect = document.getElementById('attendance-class-select');
+      const modalSelect = document.getElementById('modal-class-select');
+
+      // Setup class options for attendance
+      const teachingClasses = [];
+      
+      if (teacherData.assignmentType === 'class-teacher' && teacherData.classTeacherOf) {
+        teachingClasses.push(teacherData.classTeacherOf);
+      }
+      
+      if (teacherData.teachingClasses) {
+        teacherData.teachingClasses.forEach(className => {
+          if (!teachingClasses.includes(className)) {
+            teachingClasses.push(className);
+          }
+        });
+      }
+
+      // Populate select dropdowns
+      const classOptions = teachingClasses.map(className => 
+        `<option value="${className}">${className}</option>`
+      ).join('');
+      
+      attendanceSelect.innerHTML = `<option value="">Select Class</option>${classOptions}`;
+      modalSelect.innerHTML = `<option value="">Select Class</option>${classOptions}`;
+
+      // Disable attendance if not class teacher
+      if (teacherData.assignmentType !== 'class-teacher') {
+        attendanceAction.classList.add('action-disabled');
+        attendanceAction.onclick = () => {
+          alert('Attendance marking is only available for Class Teachers');
+        };
+      }
+    }
+
+    function showNotAssigned() {
+      document.getElementById('teacher-name').textContent = 'Teacher';
+      document.getElementById('teacher-role').textContent = 'Not Assigned';
+      document.getElementById('teacher-details').innerHTML = `
+        <div style="text-align: center; padding: 2rem; color: #f39c12;">
+          <h3>Assignment Pending</h3>
+          <p>Your role assignment is pending approval from the Super Admin.</p>
+          <p>Please contact the administration for more information.</p>
+        </div>
+      `;
+      document.getElementById('classes-grid').innerHTML = '<div class="loading">No classes assigned</div>';
+    }
+
+    function showError() {
+      document.getElementById('teacher-details').innerHTML = `
+        <div style="text-align: center; padding: 2rem; color: #e74c3c;">
+          <h3>Error Loading Data</h3>
+          <p>There was an error loading your teacher information.</p>
+          <p>Please try refreshing the page or contact support.</p>
+        </div>
+      `;
+    }
+
+    // Global functions
+    window.logout = async function() {
+      try {
+        await signOut(auth);
+        window.location.href = 'login.html';
+      } catch (error) {
+        console.error('Error logging out:', error);
+      }
+    };
+
+    window.openAttendanceModal = function() {
+      if (teacherData.assignmentType === 'class-teacher') {
+        document.getElementById('attendanceModal').style.display = 'block';
+      }
+    };
+
+    window.closeAttendanceModal = function() {
+      document.getElementById('attendanceModal').style.display = 'none';
+    };
+
+    window.goToAttendance = function() {
+      const selectedClass = document.getElementById('modal-class-select').value;
+      if (selectedClass) {
+        // Store selected class in localStorage and redirect
+        localStorage.setItem('selectedClass', selectedClass);
+        window.location.href = 'attendance.html';
+      } else {
+        alert('Please select a class');
+      }
+    };
+
+
+
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('attendanceModal');
+      if (event.target === modal) {
+        closeAttendanceModal();
+      }
+    };
+  </script>
+</body>
+</html>

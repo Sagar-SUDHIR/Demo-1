@@ -1,0 +1,1011 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Results - Vidyasshree Shikshana Kendra</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #1e3c72, #2952b3, #5ff7f50, #ff6b35);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      min-height: 100vh;
+      padding: 1rem 0;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Login Section */
+    .login-section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 3rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      animation: slideUp 0.8s ease forwards;
+      text-align: center;
+      max-width: 500px;
+      margin: 0 auto 2rem auto;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .login-title {
+      color: #1e3c72;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .login-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      text-align: left;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #1e3c72;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      border-color: #ff6b35;
+      outline: none;
+      box-shadow: 0 0 10px rgba(255,107,53,0.3);
+    }
+
+    .login-btn {
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .login-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,107,53,0.4);
+    }
+
+    .login-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    /* Main Content - Hidden initially */
+    .main-content {
+      display: none;
+    }
+
+    .main-content.visible {
+      display: block;
+    }
+
+    /* Student Profile Card */
+    .profile-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      animation: slideUp 0.8s ease forwards;
+    }
+
+    .profile-header {
+      display: flex;
+      align-items: center;
+      gap: 2rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .student-avatar {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      font-weight: bold;
+    }
+
+    .student-info h2 {
+      color: #1e3c72;
+      margin-bottom: 0.5rem;
+      font-size: 1.8rem;
+    }
+
+    .student-details {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      color: #666;
+    }
+
+    .detail-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .detail-label {
+      font-weight: 600;
+      color: #1e3c72;
+      font-size: 0.9rem;
+      margin-bottom: 0.25rem;
+    }
+
+    .detail-value {
+      font-size: 1rem;
+      color: #333;
+    }
+
+    /* Performance Overview */
+    .performance-overview {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      animation: slideUp 0.8s ease forwards;
+    }
+
+    .section-title {
+      color: #1e3c72;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .performance-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: white;
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+
+    .stat-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+    }
+
+    .stat-value {
+      font-size: 2.5rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      color: #666;
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .average-card .stat-value { color: #2952b3; }
+    .strongest-card .stat-value { color: #5ff7f50; }
+    .weakest-card .stat-value { color: #ff6b35; }
+
+    .subject-performance {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+    }
+
+    .subject-bar {
+      background: white;
+      border-radius: 10px;
+      padding: 1rem;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+
+    .subject-name {
+      font-weight: 600;
+      color: #1e3c72;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-bar {
+      height: 8px;
+      background: #e1e8ed;
+      border-radius: 4px;
+      overflow: hidden;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #ff6b35, #f7931e);
+      transition: width 0.8s ease;
+    }
+
+    .subject-percentage {
+      font-size: 0.9rem;
+      color: #666;
+      text-align: right;
+    }
+
+    /* Exam Results */
+    .exam-results {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      animation: slideUp 0.8s ease forwards;
+    }
+
+    .exam-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+      gap: 2rem;
+    }
+
+    .exam-card {
+      background: white;
+      border-radius: 15px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+      border: 2px solid transparent;
+    }
+
+    .exam-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.15);
+      border-color: #ff6b35;
+    }
+
+    .exam-header {
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #f0f0f0;
+    }
+
+    .exam-title {
+      font-size: 1.4rem;
+      font-weight: bold;
+      color: #1e3c72;
+      margin-bottom: 0.5rem;
+    }
+
+    .exam-average {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #ff6b35;
+      margin-bottom: 0.25rem;
+    }
+
+    .exam-date {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .subjects-list {
+      display: grid;
+      gap: 0.75rem;
+    }
+
+    .subject-result {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem;
+      background: #f8f9fa;
+      border-radius: 8px;
+      transition: all 0.3s ease;
+    }
+
+    .subject-result:hover {
+      background: #e9ecef;
+    }
+
+    .subject-name-result {
+      font-weight: 600;
+      color: #1e3c72;
+      flex: 1;
+    }
+
+    .subject-marks {
+      font-weight: bold;
+      color: #333;
+      margin-right: 1rem;
+    }
+
+    .subject-percentage-result {
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 15px;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    /* Loading and Messages */
+    .loading {
+      text-align: center;
+      padding: 3rem;
+      color: #666;
+      font-size: 1.1rem;
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .message.error {
+      background: rgba(255,107,53,0.1);
+      color: #d32f2f;
+      border: 2px solid rgba(255,107,53,0.3);
+    }
+
+    .message.success {
+      background: rgba(95,247,245,0.1);
+      color: #00695c;
+      border: 2px solid rgba(95,247,245,0.3);
+    }
+
+    /* Logout button */
+    .logout-btn {
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      font-size: 0.9rem;
+    }
+
+    .logout-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,107,53,0.4);
+    }
+
+    /* Refresh button */
+    .refresh-btn {
+      background: linear-gradient(135deg, #ff6b35, #f7931e);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 2rem auto;
+      font-size: 1rem;
+    }
+
+    .refresh-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,107,53,0.4);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .profile-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 1rem;
+      }
+      
+      .performance-stats {
+        grid-template-columns: 1fr;
+      }
+      
+      .exam-cards {
+        grid-template-columns: 1fr;
+      }
+      
+      .student-details {
+        grid-template-columns: 1fr;
+        gap: 0.5rem;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .logout-btn {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin-bottom: 1rem;
+      }
+    }
+
+    /* Animations for cards */
+    .exam-card {
+      animation: cardSlideIn 0.6s ease forwards;
+    }
+
+    @keyframes cardSlideIn {
+      from { 
+        opacity: 0; 
+        transform: translateY(20px) scale(0.95); 
+      }
+      to { 
+        opacity: 1; 
+        transform: translateY(0) scale(1); 
+      }
+    }
+  </style>
+</head>
+<body>
+  <button class="logout-btn" onclick="logout()" style="display: none;" id="logout-button">Logout</button>
+
+  <div class="header">
+    <h1>My Academic Results</h1>
+    <p id="welcome-message">Enter your email to view results</p>
+  </div>
+
+  <div class="container">
+    <!-- Login Section -->
+    <div class="login-section" id="login-section">
+      <h2 class="login-title">Student Login</h2>
+      <div id="login-message-container"></div>
+      
+      <form class="login-form" onsubmit="loginStudent(event)">
+        <div class="form-group">
+          <label class="form-label" for="student-email">Email Address</label>
+          <input 
+            type="email" 
+            class="form-input" 
+            id="student-email" 
+            placeholder="Enter your email address" 
+            required
+          >
+        </div>
+        
+        <button type="submit" class="login-btn" id="login-btn">
+          View My Results
+        </button>
+      </form>
+    </div>
+
+    <!-- Main Content - Hidden initially -->
+    <div class="main-content" id="main-content">
+      <!-- Student Profile -->
+      <div class="profile-card">
+        <div class="profile-header">
+          <div class="student-avatar" id="student-avatar">S</div>
+          <div class="student-info">
+            <h2 id="student-name">Loading...</h2>
+            <div class="student-details">
+              <div class="detail-item">
+                <span class="detail-label">Student ID</span>
+                <span class="detail-value" id="student-id">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Class</span>
+                <span class="detail-value" id="student-class">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Class Teacher</span>
+                <span class="detail-value" id="class-teacher">-</span>
+              </div>
+              <div class="detail-item">
+                <span class="detail-label">Academic Year</span>
+                <span class="detail-value" id="academic-year">2024-25</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Performance Overview -->
+      <div class="performance-overview">
+        <h2 class="section-title">Performance Overview</h2>
+        
+        <div class="performance-stats">
+          <div class="stat-card average-card">
+            <div class="stat-value" id="overall-average">-</div>
+            <div class="stat-label">Overall Average</div>
+          </div>
+          <div class="stat-card strongest-card">
+            <div class="stat-value" id="strongest-subject">-</div>
+            <div class="stat-label">Strongest Subject</div>
+          </div>
+          <div class="stat-card weakest-card">
+            <div class="stat-value" id="weakest-subject">-</div>
+            <div class="stat-label">Needs Improvement</div>
+          </div>
+        </div>
+
+        <div class="subject-performance" id="subject-performance">
+          <!-- Subject performance bars will be populated here -->
+        </div>
+      </div>
+
+      <!-- Exam Results -->
+      <div class="exam-results">
+        <h2 class="section-title">Exam Results</h2>
+        <div id="main-message-container"></div>
+        <div class="exam-cards" id="exam-cards-container">
+          <div class="loading">Loading your exam results...</div>
+        </div>
+      </div>
+
+      <button class="refresh-btn" onclick="loadAllResults()">Refresh Results</button>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, getDocs, doc, getDoc, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+      authDomain: "vidhyashree-mlr.firebaseapp.com",
+      projectId: "vidhyashree-mlr",
+      storageBucket: "vidhyashree-mlr.firebasestorage.app",
+      messagingSenderId: "469584837803",
+      appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+      measurementId: "G-LYEYRP433X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let currentStudentEmail = null;
+    let studentData = null;
+    let examResults = [];
+    let subjectPerformance = {};
+
+    // Global function for student login
+    window.loginStudent = async function(event) {
+      event.preventDefault();
+      
+      const email = document.getElementById('student-email').value.trim();
+      if (!email) return;
+
+      const loginBtn = document.getElementById('login-btn');
+      loginBtn.disabled = true;
+      loginBtn.textContent = 'Loading...';
+
+      try {
+        showLoginMessage('Searching for your profile...', 'success');
+        currentStudentEmail = email;
+        
+        await findStudentByEmail(email);
+        
+      } catch (error) {
+        console.error('Login error:', error);
+        showLoginMessage('Error: ' + error.message, 'error');
+        loginBtn.disabled = false;
+        loginBtn.textContent = 'View My Results';
+      }
+    };
+
+    async function findStudentByEmail(email) {
+      try {
+        // First, try to find in students collection by email
+        const studentsQuery = query(collection(db, 'students'), where('email', '==', email));
+        const studentsSnapshot = await getDocs(studentsQuery);
+        
+        if (!studentsSnapshot.empty) {
+          studentData = studentsSnapshot.docs[0].data();
+          studentData.docId = studentsSnapshot.docs[0].id;
+          await showMainContent();
+          return;
+        }
+
+        // If not found in students, search in class lists across all teachers
+        const classListsSnapshot = await getDocs(collection(db, 'class-lists'));
+        let foundStudent = null;
+
+        classListsSnapshot.forEach(doc => {
+          const classData = doc.data();
+          if (classData.students) {
+            const student = classData.students.find(s => 
+              s.email && s.email.toLowerCase() === email.toLowerCase()
+            );
+            if (student) {
+              foundStudent = {
+                ...student,
+                className: doc.id.split('-').pop(), // Extract class from document ID
+                teacherId: classData.teacherId || doc.id.split('-')[0]
+              };
+            }
+          }
+        });
+
+        if (foundStudent) {
+          studentData = foundStudent;
+          await showMainContent();
+          return;
+        }
+
+        // If still not found, search by name in exam results
+        const examResultsSnapshot = await getDocs(collection(db, 'exam-results'));
+        let foundInResults = null;
+
+        examResultsSnapshot.forEach(doc => {
+          const examData = doc.data();
+          if (examData.results) {
+            Object.values(examData.results).forEach(result => {
+              if (result.email && result.email.toLowerCase() === email.toLowerCase()) {
+                foundInResults = {
+                  name: result.name,
+                  studentId: result.studentId,
+                  email: email,
+                  className: examData.className,
+                  classTeacher: examData.teacherName
+                };
+              }
+            });
+          }
+        });
+
+        if (foundInResults) {
+          studentData = foundInResults;
+          await showMainContent();
+          return;
+        }
+
+        throw new Error('No student profile found with this email address. Please contact your teacher or administrator.');
+
+      } catch (error) {
+        throw error;
+      }
+    }
+
+    async function showMainContent() {
+      document.getElementById('login-section').style.display = 'none';
+      document.getElementById('main-content').classList.add('visible');
+      document.getElementById('logout-button').style.display = 'block';
+      
+      displayStudentProfile();
+      await loadAllResults();
+      
+      document.getElementById('welcome-message').textContent = 
+        `Welcome back, ${studentData.name || 'Student'}!`;
+    }
+
+    function displayStudentProfile() {
+      if (!studentData) return;
+
+      document.getElementById('student-name').textContent = studentData.name || 'Unknown Student';
+      document.getElementById('student-id').textContent = studentData.studentId || '-';
+      document.getElementById('student-class').textContent = studentData.className || studentData.class || '-';
+      document.getElementById('class-teacher').textContent = studentData.classTeacher || 'Not Assigned';
+      document.getElementById('student-avatar').textContent = (studentData.name || 'S').charAt(0).toUpperCase();
+    }
+
+    async function loadAllResults() {
+      if (!studentData) {
+        showMainMessage('Please wait for profile to load...', 'error');
+        return;
+      }
+
+      try {
+        showMainMessage('Loading your exam results...', 'success');
+        
+        const examResultsSnapshot = await getDocs(collection(db, 'exam-results'));
+        examResults = [];
+        const allSubjectMarks = {};
+
+        examResultsSnapshot.forEach(doc => {
+          const examData = doc.data();
+          
+          // Check if this student has results in this exam (by email, studentId, or name)
+          const studentResult = Object.values(examData.results || {}).find(result => {
+            return (result.email && result.email.toLowerCase() === currentStudentEmail.toLowerCase()) ||
+                   (result.studentId && result.studentId === studentData.studentId) ||
+                   (result.name && result.name.toLowerCase() === studentData.name.toLowerCase());
+          });
+
+          if (studentResult) {
+            const existingExam = examResults.find(exam => exam.examName === examData.examName);
+            
+            if (existingExam) {
+              existingExam.subjects.push({
+                subject: examData.teacherName || 'Unknown Subject',
+                marks: studentResult.marks,
+                totalMarks: studentResult.totalMarks,
+                percentage: parseFloat(studentResult.percentage)
+              });
+            } else {
+              examResults.push({
+                examName: examData.examName,
+                className: examData.className,
+                createdAt: examData.createdAt,
+                subjects: [{
+                  subject: examData.teacherName || 'Unknown Subject',
+                  marks: studentResult.marks,
+                  totalMarks: studentResult.totalMarks,
+                  percentage: parseFloat(studentResult.percentage)
+                }]
+              });
+            }
+
+            const subjectName = examData.teacherName || 'Unknown Subject';
+            if (!allSubjectMarks[subjectName]) {
+              allSubjectMarks[subjectName] = [];
+            }
+            allSubjectMarks[subjectName].push(parseFloat(studentResult.percentage));
+          }
+        });
+
+        // Calculate subject averages
+        subjectPerformance = {};
+        Object.keys(allSubjectMarks).forEach(subject => {
+          const marks = allSubjectMarks[subject];
+          const average = marks.reduce((sum, mark) => sum + mark, 0) / marks.length;
+          subjectPerformance[subject] = average;
+        });
+
+        // Calculate exam averages
+        examResults.forEach(exam => {
+          const totalPercentage = exam.subjects.reduce((sum, subject) => sum + subject.percentage, 0);
+          exam.averagePercentage = totalPercentage / exam.subjects.length;
+        });
+
+        examResults.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+        displayPerformanceOverview();
+        displayExamResults();
+        showMainMessage('Results loaded successfully!', 'success');
+        
+      } catch (error) {
+        console.error('Error loading results:', error);
+        showMainMessage('Error loading results: ' + error.message, 'error');
+      }
+    }
+
+    function displayPerformanceOverview() {
+      const allPercentages = Object.values(subjectPerformance);
+      const overallAverage = allPercentages.length > 0 ? 
+        (allPercentages.reduce((sum, p) => sum + p, 0) / allPercentages.length).toFixed(1) : 0;
+
+      const subjects = Object.keys(subjectPerformance);
+      const strongestSubject = subjects.reduce((a, b) => 
+        subjectPerformance[a] > subjectPerformance[b] ? a : b, subjects[0] || 'None');
+      const weakestSubject = subjects.reduce((a, b) => 
+        subjectPerformance[a] < subjectPerformance[b] ? a : b, subjects[0] || 'None');
+
+      document.getElementById('overall-average').textContent = `${overallAverage}%`;
+      document.getElementById('strongest-subject').textContent = strongestSubject || '-';
+      document.getElementById('weakest-subject').textContent = weakestSubject || '-';
+
+      const container = document.getElementById('subject-performance');
+      
+      if (subjects.length === 0) {
+        container.innerHTML = '<div class="loading">No subject performance data available</div>';
+        return;
+      }
+
+      container.innerHTML = subjects.map(subject => `
+        <div class="subject-bar">
+          <div class="subject-name">${subject}</div>
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${subjectPerformance[subject]}%"></div>
+          </div>
+          <div class="subject-percentage">${subjectPerformance[subject].toFixed(1)}%</div>
+        </div>
+      `).join('');
+    }
+
+    function displayExamResults() {
+      const container = document.getElementById('exam-cards-container');
+      
+      if (examResults.length === 0) {
+        container.innerHTML = '<div class="loading">No exam results found</div>';
+        return;
+      }
+
+      container.innerHTML = examResults.map((exam, index) => `
+        <div class="exam-card" style="animation-delay: ${index * 0.1}s">
+          <div class="exam-header">
+            <div class="exam-title">${exam.examName}</div>
+            <div class="exam-average">${exam.averagePercentage.toFixed(1)}%</div>
+            <div class="exam-date">${new Date(exam.createdAt).toLocaleDateString()}</div>
+          </div>
+          
+          <div class="subjects-list">
+            ${exam.subjects.map(subject => `
+              <div class="subject-result">
+                <div class="subject-name-result">${subject.subject}</div>
+                <div class="subject-marks">${subject.marks}/${subject.totalMarks}</div>
+                <div class="subject-percentage-result">${subject.percentage.toFixed(1)}%</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function showLoginMessage(text, type) {
+      const container = document.getElementById('login-message-container');
+      container.innerHTML = `<div class="message ${type}">${text}</div>`;
+      
+      if (type=== 'success') {
+        setTimeout(() => {
+          container.innerHTML = '';
+        }, 3000);
+      }
+    }
+
+    function showMainMessage(text, type) {
+      const container = document.getElementById('main-message-container');
+      container.innerHTML = `<div class="message ${type}">${text}</div>`;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          container.innerHTML = '';
+        }, 3000);
+      }
+    }
+
+    // Global function for logout
+    window.logout = function() {
+      document.getElementById('main-content').classList.remove('visible');
+      document.getElementById('login-section').style.display = 'block';
+      document.getElementById('logout-button').style.display = 'none';
+      document.getElementById('student-email').value = '';
+      document.getElementById('welcome-message').textContent = 'Enter your email to view results';
+      
+      // Reset data
+      currentStudentEmail = null;
+      studentData = null;
+      examResults = [];
+      subjectPerformance = {};
+    };
+
+    // Global function for refresh button
+    window.loadAllResults = loadAllResults;
+
+    // Auto-refresh every 5 minutes
+    setInterval(() => {
+      if (currentStudentEmail && studentData) {
+        loadAllResults();
+      }
+    }, 5 * 60 * 1000);
+
+    // Handle window click events for better UX
+    window.addEventListener('click', function(event) {
+      if (event.target.classList.contains('exam-card')) {
+        event.target.style.transform = 'scale(0.98)';
+        setTimeout(() => {
+          event.target.style.transform = '';
+        }, 150);
+      }
+    });
+
+    // Handle form submission on Enter key
+    document.addEventListener('DOMContentLoaded', function() {
+      const emailInput = document.getElementById('student-email');
+      emailInput.addEventListener('keypress', function(event) {
+        if (event.key === 'Enter') {
+          event.preventDefault();
+          document.querySelector('.login-form').dispatchEvent(new Event('submit'));
+        }
+      });
+    });
+
+    // Add loading animation
+    function addLoadingSpinner() {
+      const style = document.createElement('style');
+      style.textContent = `
+        .spinner {
+          border: 4px solid #f3f3f3;
+          border-top: 4px solid #ff6b35;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+          margin: 20px auto;
+        }
+        @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Initialize loading spinner
+    addLoadingSpinner();
+
+    // Performance optimization - lazy load exam cards
+    function lazyLoadExamCards() {
+      const examCards = document.querySelectorAll('.exam-card');
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      });
+
+      examCards.forEach(card => {
+        observer.observe(card);
+      });
+    }
+
+    // Call lazy loading after exam cards are rendered
+    const originalDisplayExamResults = displayExamResults;
+    displayExamResults = function() {
+      originalDisplayExamResults();
+      setTimeout(lazyLoadExamCards, 100);
+    };
+  </script>
+</body>
+</html>

@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Rate Our School - Vidyasshree Shikshana Kendra</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #1e3c72, #2a5298, #ff7f50, #ff6b35);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 3rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+      animation: fadeIn 1s ease;
+    }
+
+    .header p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .rating-form-container {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 3rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      animation: slideUp 0.8s ease;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-title {
+      color: #1e3c72;
+      font-size: 2rem;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .form-group {
+      margin-bottom: 2rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #1e3c72;
+      font-size: 1.1rem;
+    }
+
+    .form-input, .form-textarea {
+      width: 100%;
+      padding: 1rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+      font-family: inherit;
+    }
+
+    .form-input:focus, .form-textarea:focus {
+      border-color: #ff7f50;
+      outline: none;
+      box-shadow: 0 0 10px rgba(255,127,80,0.3);
+    }
+
+    .form-textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .rating-section {
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      color: white;
+      padding: 2rem;
+      border-radius: 15px;
+      margin-bottom: 2rem;
+      text-align: center;
+    }
+
+    .rating-title {
+      font-size: 1.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .star-rating {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin: 1.5rem 0;
+    }
+
+    .star {
+      font-size: 2.5rem;
+      color: rgba(255,255,255,0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      user-select: none;
+    }
+
+    .star:hover,
+    .star.active {
+      color: #ffd700;
+      transform: scale(1.1);
+    }
+
+    .star.hover {
+      color: #ffd700;
+      transform: scale(1.05);
+    }
+
+    .rating-text {
+      font-size: 1.2rem;
+      font-weight: 600;
+      margin-top: 1rem;
+      min-height: 30px;
+    }
+
+    .rating-labels {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      opacity: 0.8;
+    }
+
+    .submit-btn {
+      background: linear-gradient(135deg, #ff7f50, #ff6b35);
+      color: white;
+      border: none;
+      padding: 1.2rem 2.5rem;
+      border-radius: 25px;
+      font-size: 1.2rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 1rem;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255,127,80,0.4);
+    }
+
+    .submit-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 2rem;
+      font-weight: 500;
+      text-align: center;
+    }
+
+    .message.success {
+      background: rgba(39,174,96,0.1);
+      color: #27ae60;
+      border: 2px solid rgba(39,174,96,0.3);
+    }
+
+    .message.error {
+      background: rgba(231,76,60,0.1);
+      color: #e74c3c;
+      border: 2px solid rgba(231,76,60,0.3);
+    }
+
+    .back-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+      display: inline-block;
+      margin-bottom: 2rem;
+    }
+
+    .back-btn:hover {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    .required {
+      color: #ff7f50;
+    }
+
+    .help-text {
+      font-size: 0.9rem;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .rating-form-container {
+        padding: 2rem;
+      }
+      
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .star {
+        font-size: 2rem;
+      }
+
+      .rating-labels {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Rate Our School</h1>
+    <p>Share your experience with Vidyasshree Shikshana Kendra</p>
+  </div>
+
+  <div class="container">
+    <a href="index.html" class="back-btn">Back to Home</a>
+
+    <div class="rating-form-container">
+      <h2 class="form-title">School Rating & Feedback</h2>
+      
+      <div id="message-container"></div>
+
+      <form id="rating-form" onsubmit="submitRating(event)">
+        <div class="form-group">
+          <label class="form-label" for="user-email">
+            Your Email Address <span class="required">*</span>
+          </label>
+          <input type="email" class="form-input" id="user-email" required placeholder="Enter your email address">
+          <div class="help-text">This helps us follow up on your feedback if needed</div>
+        </div>
+
+        <div class="rating-section">
+          <div class="rating-title">Rate Your Overall Experience</div>
+          <div class="star-rating" id="star-rating">
+            <span class="star" data-rating="1">★</span>
+            <span class="star" data-rating="2">★</span>
+            <span class="star" data-rating="3">★</span>
+            <span class="star" data-rating="4">★</span>
+            <span class="star" data-rating="5">★</span>
+          </div>
+          <div class="rating-text" id="rating-text">Click on stars to rate</div>
+          <div class="rating-labels">
+            <span>Poor</span>
+            <span>Fair</span>
+            <span>Good</span>
+            <span>Very Good</span>
+            <span>Excellent</span>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="school-description">
+            Describe Your Experience with Our School <span class="required">*</span>
+          </label>
+          <textarea class="form-textarea" id="school-description" required 
+            placeholder="Please share your thoughts about the school, teachers, facilities, curriculum, or any other aspects of your experience. Your feedback helps us improve our services."></textarea>
+          <div class="help-text">Share details about teaching quality, facilities, administration, or any suggestions for improvement</div>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submit-btn">
+          Submit Rating
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getFirestore, collection, addDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+      authDomain: "vidhyashree-mlr.firebaseapp.com",
+      projectId: "vidhyashree-mlr",
+      storageBucket: "vidhyashree-mlr.firebasestorage.app",
+      messagingSenderId: "469584837803",
+      appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+      measurementId: "G-LYEYRP433X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    let selectedRating = 0;
+    
+    const ratingTexts = {
+      0: 'Click on stars to rate',
+      1: 'Poor - Needs significant improvement',
+      2: 'Fair - Below expectations',
+      3: 'Good - Meets expectations',
+      4: 'Very Good - Above expectations', 
+      5: 'Excellent - Exceeds expectations'
+    };
+
+    // Star rating functionality
+    document.addEventListener('DOMContentLoaded', function() {
+      const stars = document.querySelectorAll('.star');
+      const ratingText = document.getElementById('rating-text');
+
+      stars.forEach((star, index) => {
+        star.addEventListener('mouseover', function() {
+          highlightStars(index + 1, 'hover');
+          ratingText.textContent = ratingTexts[index + 1];
+        });
+
+        star.addEventListener('mouseout', function() {
+          highlightStars(selectedRating, 'active');
+          ratingText.textContent = ratingTexts[selectedRating];
+        });
+
+        star.addEventListener('click', function() {
+          selectedRating = index + 1;
+          highlightStars(selectedRating, 'active');
+          ratingText.textContent = ratingTexts[selectedRating];
+        });
+      });
+    });
+
+    function highlightStars(rating, className) {
+      const stars = document.querySelectorAll('.star');
+      stars.forEach((star, index) => {
+        star.classList.remove('active', 'hover');
+        if (index < rating) {
+          star.classList.add(className);
+        }
+      });
+    }
+
+    window.submitRating = async function(event) {
+      event.preventDefault();
+      
+      const submitBtn = document.getElementById('submit-btn');
+      const originalText = submitBtn.textContent;
+      
+      try {
+        const userEmail = document.getElementById('user-email').value.trim();
+        const schoolDescription = document.getElementById('school-description').value.trim();
+        
+        // Validation
+        if (!userEmail || !schoolDescription) {
+          showMessage('Please fill in all required fields', 'error');
+          return;
+        }
+
+        if (!isValidEmail(userEmail)) {
+          showMessage('Please enter a valid email address', 'error');
+          return;
+        }
+
+        if (selectedRating === 0) {
+          showMessage('Please select a star rating', 'error');
+          return;
+        }
+
+        if (schoolDescription.length < 10) {
+          showMessage('Please provide a more detailed description (at least 10 characters)', 'error');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Submitting...';
+        showMessage('Submitting your rating...', 'success');
+
+        // Create rating object
+        const rating = {
+          email: userEmail,
+          rating: selectedRating,
+          description: schoolDescription,
+          ratingText: ratingTexts[selectedRating],
+          submittedAt: new Date().toISOString(),
+          submittedDate: new Date().toLocaleDateString('en-IN'),
+          submittedTime: new Date().toLocaleTimeString('en-IN'),
+          status: 'pending'
+        };
+
+        // Save to Firebase
+        await addDoc(collection(db, 'school-ratings'), rating);
+
+        showMessage('Thank you for your feedback! Your rating has been submitted successfully.', 'success');
+        
+        // Clear form
+        document.getElementById('rating-form').reset();
+        selectedRating = 0;
+        highlightStars(0, 'active');
+        document.getElementById('rating-text').textContent = ratingTexts[0];
+        
+      } catch (error) {
+        console.error('Error submitting rating:', error);
+        showMessage('Error submitting rating. Please try again.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    };
+
+    function showMessage(text, type) {
+      const container = document.getElementById('message-container');
+      container.innerHTML = `<div class="message ${type}">${text}</div>`;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          container.innerHTML = '';
+        }, 8000);
+      } else {
+        setTimeout(() => {
+          container.innerHTML = '';
+        }, 5000);
+      }
+    }
+
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+  </script>
+</body>
+</html>

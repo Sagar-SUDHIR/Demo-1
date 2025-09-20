@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us | Vidyasshree Shikshana Kendra</title>
+  <link rel="stylesheet" href="styles.css" />
+  <!-- AOS CSS -->
+<link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet" />
+  <style>
+  /* styles.css */
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #fffdf8;
+  color: #333;
+}
+
+.about-page {
+  padding: 60px 20px;
+  max-width: 900px;
+  margin: auto;
+}
+
+.about-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.about-header h1 {
+  font-size: 3rem;
+  color: #e67e22;
+  margin-bottom: 10px;
+}
+
+.about-header .subtitle {
+  font-size: 1.3rem;
+  color: #555;
+  font-style: italic;
+}
+
+.about-body p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.about-body .highlight {
+  font-weight: 600;
+  color: #444;
+  font-style: italic;
+  margin-top: 30px;
+}
+  .dedication {
+  background-color: #fdf6ec;
+  padding: 60px 20px;
+  text-align: center;
+  color: #444;
+}
+
+.dedication-content {
+  max-width: 700px;
+  margin: auto;
+}
+
+.dedication h2 {
+  font-size: 2rem;
+  color: #d35400;
+  margin-bottom: 20px;
+}
+
+.dedication p {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 15px;
+}
+
+.signature {
+  margin-top: 30px;
+  font-style: italic;
+  color: #777;
+}
+  </style>  
+</head>
+<body>
+  <section class="about-page">
+    <div class="about-header">
+      <h1>About Us</h1>
+      <p class="subtitle">Rooted in Excellence. Growing with Purpose.</p>
+    </div>
+<div class="about-body">
+  <p data-aos="fade-up">
+    Since our founding in <strong>2000</strong>, Vidyasshree Shikshana Kendra has stood as a pillar of <em>premium quality education</em> and <em>character development</em>.
+  </p>
+  <p data-aos="fade-up" data-aos-delay="100">
+    Our experienced faculty nurtures every student with care, blending academic rigor with a deep respect for <strong>community</strong> and <strong>culture</strong>.
+  </p>
+  <p data-aos="fade-up" data-aos-delay="200">
+    We believe that true learning happens both inside and outside the classroom. That’s why we champion <strong>extracurricular excellence</strong>—from competitive <em>sports</em> to strategic <em>chess</em>.
+  </p>
+  <p class="highlight" data-aos="zoom-in" data-aos-delay="300">
+    Vidyasshree is more than a school—it’s a home for growth, pride, and lifelong inspiration.
+  </p>
+</div>
+    <section class="dedication">
+  <div class="dedication-content" data-aos="fade-up">
+    <h2>In Loving Memory</h2>
+    <p>
+      This website is lovingly dedicated to my grandfather <strong>Mr.Keshava Kadambalithaya</strong>, who was a well wisher of  Vidyashree Shikshana Kendra and its students.
+    </p>
+    <p>
+      Though he is no longer with us, his spirit lives on in every classroom, every smile, and every step forward. May this platform carry his wish into the hearts of generations to come.
+    </p>
+    <p class="signature">— Sagar VS</p>
+  </div>
+</section>
+
+  <!-- AOS JS -->
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 1000,
+    once: true
+  });
+</script>
+    <!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script>
+  gsap.from(".about-header h1", {
+    y: -50,
+    opacity: 0,
+    duration: 1,
+    ease: "power2.out"
+  });
+
+  gsap.from(".about-header .subtitle", {
+    y: 30,
+    opacity: 0,
+    duration: 1,
+    delay: 0.5,
+    ease: "power2.out"
+  });
+</script>
+</body>
+</html>

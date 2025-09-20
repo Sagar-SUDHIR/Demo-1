@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Dashboard - Vidyasshree Shikshana Kendra</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animations - Same as index.html */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        @keyframes slideInFromTop {
+            from {
+                opacity: 0;
+                transform: translateY(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.3);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        /* Header - Exact same as index.html */
+        .header {
+            background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+            animation: slideInFromTop 0.8s ease-out;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #2c3e50;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: #fff;
+            transform: translateY(-2px);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #fff;
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #2c3e50;
+            transition: transform 0.3s ease;
+        }
+
+        .menu-toggle:hover {
+            transform: rotate(90deg);
+        }
+
+        /* Hero Section - Same as index but for student */
+        .hero {
+            background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+            padding: 8rem 2rem 4rem;
+            display: flex;
+            align-items: center;
+            min-height: 60vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="1.5" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="1" fill="rgba(255,255,255,0.1)"/></svg>');
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .hero-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .hero-content {
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        .hero-title {
+            font-size: 3.5rem;
+            font-weight: bold;
+            color: #fff;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: rgba(255,255,255,0.9);
+            margin-bottom: 2rem;
+        }
+
+        /* Main Content - Same as index */
+        .main-content {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .content-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+        }
+
+        .about-section, .announcements-section {
+            background: #fff;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .about-section:hover, .announcements-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .section-title {
+            font-size: 2rem;
+            color: #2c3e50;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+            border-radius: 2px;
+        }
+
+        .about-text {
+            color: #666;
+            margin-bottom: 2rem;
+            line-height: 1.8;
+        }
+
+        /* Announcements - Same as index */
+        .announcement-item {
+            padding: 1rem;
+            border-left: 4px solid #ff8c42;
+            margin-bottom: 1rem;
+            background: #f8f9fa;
+            border-radius: 0 10px 10px 0;
+            transition: all 0.3s ease;
+            animation: slideIn 0.8s ease-out;
+        }
+
+        .announcement-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .announcement-date {
+            font-size: 0.9rem;
+            color: #ff8c42;
+            font-weight: 600;
+        }
+
+        .announcement-text {
+            color: #2c3e50;
+            margin-top: 0.5rem;
+        }
+
+        /* Faculty Section - Same as index */
+        .faculty-section {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            padding: 4rem 2rem;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .faculty-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><polygon points="0,0 100,0 80,100 0,80" fill="rgba(255,255,255,0.05)"/></svg>');
+        }
+
+        .faculty-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        .faculty-title {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 3rem;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .faculty-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .faculty-card {
+            background: rgba(255,255,255,0.1);
+            padding: 1.5rem;
+            border-radius: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            animation: bounceIn 1s ease-out;
+        }
+
+        .faculty-card:hover {
+            transform: translateY(-10px) scale(1.05);
+            background: rgba(255,255,255,0.2);
+        }
+
+        .faculty-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: bold;
+            color: #fff;
+            animation: pulse 2s infinite;
+        }
+
+        .faculty-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .faculty-subject {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        /* Events Section - Same as index */
+        .events-section {
+            padding: 4rem 2rem;
+            background: #f8f9fa;
+        }
+
+        .events-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .events-content {
+            animation: fadeInLeft 1s ease-out;
+        }
+
+        .events-title {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 2rem;
+        }
+
+        .event-card {
+            background: #fff;
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .event-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+        }
+
+        .event-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        }
+
+        .event-date-badge {
+            background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+            color: #fff;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        /* Buttons - Same as index */
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 25px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary {
+            background: #2c3e50;
+            color: #fff;
+            transform: translateY(0);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(44, 62, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: #fff;
+            color: #ff8c42;
+            transform: translateY(0);
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Loading Animation - Same as index */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,140,66,.3);
+            border-radius: 50%;
+            border-top-color: #ff8c42;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        /* Footer - Same as index */
+        .footer {
+            background: #2c3e50;
+            color: #fff;
+            padding: 3rem 2rem 1rem;
+            text-align: center;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-text {
+            margin-bottom: 1rem;
+            opacity: 0.8;
+        }
+
+        .signature {
+            margin-top: 30px;
+            font-style: italic;
+            color: #777;
+        }
+
+        /* Responsive Design - Same as index */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+                flex-direction: column;
+                padding: 1rem 0;
+                text-align: center;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .hero-title {
+                font-size: 2.5rem;
+            }
+
+            .content-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .faculty-grid {
+                grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.5rem;
+            }
+            
+            .events-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header with Student Navigation -->
+    <header class="header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">Vidyasshree Shikshana Kendra</a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="student.html">Dashboard</a></li>
+                    <li><a href="result.html">View Result</a></li>
+                    <li><a href="rate.html">Rate Us</a></li>
+                    <li><a href="my attendance .html">My Attendance</a></li>
+                    <li><a href="leave-request.html">Leave Request</a></li>
+                </ul>
+            </nav>
+            <button class="menu-toggle">☰</button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1 class="hero-title">Student Dashboard</h1>
+                <p class="hero-subtitle">Access your academic resources and stay connected with your school</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="main-content">
+        <div class="content-container">
+            <div class="about-section">
+                <h2 class="section-title">Faculty</h2>
+                <p class="about-text">
+                    Connect with our dedicated faculty members who are here to guide and support your academic journey.
+                </p>
+                <a href="index.html#faculty" class="btn btn-primary">View All Faculty</a>
+            </div>
+
+            <div class="announcements-section">
+                <h2 class="section-title">Announcements</h2>
+                <div id="announcements-list">
+                    <div class="loading"></div>
+                </div>
+                <a href="announcement.html" class="btn btn-primary">View All Announcements</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Faculty Section -->
+    <section class="faculty-section">
+        <div class="faculty-container">
+            <h2 class="faculty-title">Our Dedicated Faculty</h2>
+            <div class="faculty-grid">
+                <div class="faculty-card">
+                    <div class="faculty-image">VN</div>
+                    <div class="faculty-name">Venugopalan Nair</div>
+                    <div class="faculty-subject">Head Master</div>
+                </div>
+                <div class="faculty-card">
+                    <div class="faculty-image">PS</div>
+                    <div class="faculty-name">Prajitha Sathyan</div>
+                    <div class="faculty-subject">English Literature</div>
+                </div>
+                <div class="faculty-card">
+                    <div class="faculty-image">SR</div>
+                    <div class="faculty-name">Supriya</div>
+                    <div class="faculty-subject">Science</div>
+                </div>
+                <div class="faculty-card">
+                    <div class="faculty-image">MM</div>
+                    <div class="faculty-name">Minimol</div>
+                    <div class="faculty-subject">History & Geography</div>
+                </div>
+            </div>
+            <div style="text-align: center;">
+                <a href="index.html#faculty" class="btn btn-secondary">See All Faculty</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section class="events-section">
+        <div class="events-container">
+            <div class="events-content">
+                <h2 class="events-title">Upcoming Events</h2>
+                <div id="events-list">
+                    <div class="loading"></div>
+                </div>
+                <div style="text-align: center; margin-top: 2rem;">
+                    <a href="events.html" class="btn btn-primary">View All Events</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <p class="footer-text">© 2025 Vidyashree Shikshana Kendra Mulleria. All Rights Reserved.</p>
+            <p class="signature">Designed by SagarVS</p>
+        </div>
+    </footer>
+
+    <!-- Firebase Integration Script - Same as index -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-app.js";
+        import { getFirestore, collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.5.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+            authDomain: "vidhyashree-mlr.firebaseapp.com",
+            projectId: "vidhyashree-mlr",
+            storageBucket: "vidhyashree-mlr.firebasestorage.app",
+            messagingSenderId: "469584837803",
+            appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+            measurementId: "G-LYEYRP433X"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Load Announcements - Same as index
+        async function loadAnnouncements() {
+            const announcementsList = document.getElementById('announcements-list');
+            announcementsList.innerHTML = '<div class="loading"></div>';
+            try {
+                const q = query(collection(db, "announcements"), orderBy("date", "desc"), limit(3));
+                const snapshot = await getDocs(q);
+                announcementsList.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    announcementsList.innerHTML = '<div class="announcement-item"><div class="announcement-text">No announcements available.</div></div>';
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'announcement-item';
+                    div.innerHTML = `<div class="announcement-date">${data.date}</div>
+                                     <div class="announcement-text">${data.text}</div>`;
+                    announcementsList.appendChild(div);
+                });
+            } catch (error) {
+                console.error("Error loading announcements:", error);
+                announcementsList.innerHTML = '<p style="color:red;">Failed to load announcements.</p>';
+            }
+        }
+
+        // Load Events - Same as index
+        async function loadEvents() {
+            const eventsList = document.getElementById('events-list');
+            eventsList.innerHTML = '<div class="loading"></div>';
+            try {
+                const q = query(collection(db, "events"), orderBy("date", "asc"), limit(4));
+                const snapshot = await getDocs(q);
+                eventsList.innerHTML = '';
+                
+                if (snapshot.empty) {
+                    eventsList.innerHTML = '<div class="event-card"><div class="event-date-badge">No Events</div><div>Check back later for upcoming events.</div></div>';
+                    return;
+                }
+                
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const div = document.createElement('div');
+                    div.className = 'event-card';
+                    const eventDate = new Date(data.date);
+                    const formattedDate = eventDate.toLocaleDateString('en-US', { 
+                        year: 'numeric', 
+                        month: 'long', 
+                        day: 'numeric' 
+                    });
+                    div.innerHTML = `<div class="event-date-badge">${formattedDate}</div>
+                                     <div>${data.title || data.text || 'Event'}</div>
+                                     ${data.description ? `<p style="color:#666;margin-top:0.5rem;">${data.description}</p>` : ''}`;
+                    eventsList.appendChild(div);
+                });
+            } catch (error) {
+                console.error("Error loading events:", error);
+                eventsList.innerHTML = '<p style="color:red;">Failed to load events.</p>';
+            }
+        }
+
+        // Call functions
+        loadAnnouncements();
+        loadEvents();
+
+        // Mobile Menu Toggle - Same as index
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        menuToggle.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+    </script>
+</body>
+</html>

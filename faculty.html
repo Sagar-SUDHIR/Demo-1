@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Faculty - Our Teachers</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            animation: fadeInDown 1s ease-out;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            animation: fadeInUp 1s ease-out 0.2s both;
+        }
+
+        .slider-container {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
+            height: 550px;
+            perspective: 1000px;
+            animation: slideUp 1s ease-out 0.5s both;
+        }
+
+        .slider {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            transform-style: preserve-3d;
+        }
+
+        .card {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+            transform: translateX(100%) rotateY(45deg);
+            opacity: 0;
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .card.active {
+            transform: translateX(0) rotateY(0deg);
+            opacity: 1;
+            z-index: 10;
+        }
+
+        .card.prev {
+            transform: translateX(-100%) rotateY(-45deg);
+            opacity: 0.3;
+            z-index: 5;
+        }
+
+        .card.next {
+            transform: translateX(100%) rotateY(45deg);
+            opacity: 0.3;
+            z-index: 5;
+        }
+
+        .teacher-photo {
+            width: 140px;
+            height: 140px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #ff6b35;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover .teacher-photo {
+            transform: scale(1.1) rotate(5deg);
+        }
+
+        .teacher-name {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .teacher-subject {
+            font-size: 1.3rem;
+            color: #666;
+            margin-bottom: 20px;
+            font-style: italic;
+        }
+
+        .teacher-description {
+            color: #777;
+            line-height: 1.5;
+            font-size: 1rem;
+        }
+
+        .navigation {
+            position: absolute;
+            bottom: -80px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 20px;
+            z-index: 20;
+        }
+
+        .nav-btn {
+            width: 60px;
+            height: 60px;
+            border: none;
+            border-radius: 50%;
+            background: linear-gradient(45deg, #ff6b35, #f7931e);
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .nav-btn:active {
+            transform: translateY(0) scale(0.95);
+        }
+
+        .indicators {
+            position: absolute;
+            bottom: -120px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 20;
+        }
+
+        .indicator {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .indicator.active {
+            background: white;
+            transform: scale(1.3);
+        }
+
+        .auto-play-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255,255,255,0.2);
+            border: 2px solid white;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .auto-play-toggle:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(50px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(100px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 { font-size: 2rem; }
+            .slider-container { max-width: 320px; height: 480px; }
+            .card { padding: 20px; }
+            .teacher-photo { width: 120px; height: 120px; }
+            .teacher-name { font-size: 1.5rem; }
+            .teacher-subject { font-size: 1.1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Our Faculty</h1>
+        <p>Meet our dedicated and experienced teachers</p>
+    </div>
+
+    <button class="auto-play-toggle" onclick="toggleAutoPlay()">
+        <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+            <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+            <path d="M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0V7.75h1v1.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5h-3.5z"/>
+        </svg>
+        Auto Play
+    </button>
+
+    <div class="slider-container">
+        <div class="slider" id="slider">
+            <!-- Teacher Cards -->
+            <div class="card active">
+                <img src="Ranganath shenoy.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ranganath Shenoy</h2>
+                <p class="teacher-subject">School secratary</p>
+                <p class="teacher-description"></p>
+            </div> 
+            <div class="card">
+                <img src="Bala master.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Balasubramanya Bhat Kolikaje</h2>
+                <p class="teacher-subject">Music teacher</p>
+                <p class="teacher-description"></p>
+            </div>            
+                <div class="card">
+      <img src="srividhya.jpg" alt="Dr. Sarah Johnson" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Sreevidhya KN</h2>
+                <p class="teacher-subject">HSA Maths</p>
+                <p class="teacher-description"></p>
+            </div>
+                 <div class="card">
+                <img src="shruthi.jpg" alt="Prof. Michael Chen" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Shruthi BK</h2>
+                <p class="teacher-subject">IT instructor</p>
+                <p class="teacher-description"></p>
+            </div>
+
+            <div class="card">
+                <img src="prajitha.jpg" alt="Dr. Emily Rodriguez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Prajitha Sathyan</h2>
+                <p class="teacher-subject">HSA English</p>
+                <p class="teacher-description"></p>
+            </div>
+
+            <div class="card">
+                <img src="remya.jpg" alt="Prof. David Kumar" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Remya</h2>
+                <p class="teacher-subject">Physics</p>
+                <p class="teacher-description"></p>
+            </div>
+
+            <div class="card">
+                <img src="mini.jpg" alt="Ms. Lisa Thompson" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Minimol</h2>
+                <p class="teacher-subject">HSA SociaL Science</p>
+                <p class="teacher-description"></p>
+            </div>
+                        <div class="card">
+                <img src="ranjini.jpg" alt="Prof. David Kumar" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Ranjini</h2>
+                <p class="teacher-subject">Chemistry</p>
+                <p class="teacher-description"></p>
+            </div>
+                  
+                        <div class="card">
+                <img src="poornima.jpg" alt="Prof. David Kumar" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Poornima</h2>
+                <p class="teacher-subject">HST Hindi</p>
+                <p class="teacher-description"></p>
+            </div>
+                  <div class="card">
+                <img src="lohitha.jpg" alt="Prof. David Kumar" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Lohithashree</h2>
+                <p class="teacher-subject">HSA Kannada</p>
+                <p class="teacher-description"></p>
+            </div>
+                  <div class="card">
+                <img src="dhanya.jpg" alt="Prof. David Kumar" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Dhanya</h2>
+                <p class="teacher-subject">asst Malayalam</p>
+                <p class="teacher-description"></p>
+            </div>
+            <div class="card">
+                <img src="supriya.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Supriya</h2>
+                <p class="teacher-subject">HST Science</p>
+                <p class="teacher-description"></p>
+            </div>                
+                
+                <div class="card">
+                <img src="pushpa.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Pushpa</h2>
+                <p class="teacher-subject">Asst. Shishuvatika</p>
+                <p class="teacher-description"></p>
+            </div>
+                <div class="card">
+                <img src="vijitha.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Vijitha</h2>
+                <p class="teacher-subject">Schhol Accountant</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="pushpa1.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Pushpa</h2>
+                <p class="teacher-subject">Asst.Shishuvatika Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+             
+             <div class="card">
+                <img src="sharadha.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Sharadha</h2>
+                <p class="teacher-subject">Asst.Head Master</p>
+                <p class="teacher-description"></p>
+            </div>
+            
+             <div class="card">
+                <img src="meena.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Meena Kumari</h2>
+                <p class="teacher-subject">LP asst.teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="ratnavathi.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Rathnavathi.M</h2>
+                <p class="teacher-subject">Asst.LP Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="ramya.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Ramya</h2>
+                <p class="teacher-subject">Asst.LP Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="latha.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Latha Kumari</h2>
+                <p class="teacher-subject">Asst.Yoga teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="reshma.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Reshma Rai M</h2>
+                <p class="teacher-subject">Asst.LP Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+            
+             <div class="card">
+                <img src="jayanthi.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Jayanthi A</h2>
+                <p class="teacher-subject">Asst.LP Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="ganalatha.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Ganalatha.N</h2>
+                <p class="teacher-subject">Asst.sanskrit Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="Shreevidya.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.SreeVidya K</h2>
+                <p class="teacher-subject">Asst.LP Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+
+
+             <div class="card">
+                <img src="vasanthi.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Vasanthi</h2>
+                <p class="teacher-subject">Asst.Shishuvatika teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="ramya2.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Ramya K</h2>
+                <p class="teacher-subject">Asst.Shishuvatika teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+            
+             <div class="card">
+                <img src="usha1.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Usha</h2>
+                <p class="teacher-subject">Asst.Shishuvatika Teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="lekha.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Lekha</h2>
+                <p class="teacher-subject">Asst.shishuvatika teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+            
+             <div class="card">
+                <img src="satyavathi.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Satyavathi B</h2>
+                <p class="teacher-subject">Asst.SV teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+             <div class="card">
+                <img src="usha.jpg" alt="Prof. Anna Martinez" class="teacher-photo">
+                <h2 class="teacher-name">Ms.Usha K</h2>
+                <p class="teacher-subject">Asst.LP teacher</p>
+                <p class="teacher-description"></p>
+            </div>
+
+        </div>
+
+        <div class="navigation">
+            <button class="nav-btn" onclick="previousCard()">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M11.354 1.646a.5.5 0 0 1 0 .708L5.707 8l5.647 5.646a.5.5 0 0 1-.708.708l-6-6a.5.5 0 0 1 0-.708l6-6a.5.5 0 0 1 .708 0z"/>
+                </svg>
+            </button>
+            <button class="nav-btn" onclick="nextCard()">
+                <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M4.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L10.293 8 4.646 2.354a.5.5 0 0 1 0-.708z"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="indicators" id="indicators">
+            <!-- Indicators will be generated by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        let currentCard = 0;
+        let cards = document.querySelectorAll('.card');
+        let totalCards = cards.length;
+        let autoPlayInterval;
+        let isAutoPlaying = true;
+
+        // Initialize indicators
+        function createIndicators() {
+            const indicatorsContainer = document.getElementById('indicators');
+            for (let i = 0; i < totalCards; i++) {
+                const indicator = document.createElement('div');
+                indicator.className = 'indicator';
+                if (i === 0) indicator.classList.add('active');
+                indicator.onclick = () => goToCard(i);
+                indicatorsContainer.appendChild(indicator);
+            }
+        }
+
+        // Update card positions and indicators
+        function updateCards() {
+            cards.forEach((card, index) => {
+                card.classList.remove('active', 'prev', 'next');
+                
+                if (index === currentCard) {
+                    card.classList.add('active');
+                } else if (index === (currentCard - 1 + totalCards) % totalCards) {
+                    card.classList.add('prev');
+                } else if (index === (currentCard + 1) % totalCards) {
+                    card.classList.add('next');
+                }
+            });
+
+            // Update indicators
+            document.querySelectorAll('.indicator').forEach((indicator, index) => {
+                indicator.classList.toggle('active', index === currentCard);
+            });
+        }
+
+        // Go to next card
+        function nextCard() {
+            currentCard = (currentCard + 1) % totalCards;
+            updateCards();
+        }
+
+        // Go to previous card
+        function previousCard() {
+            currentCard = (currentCard - 1 + totalCards) % totalCards;
+            updateCards();
+        }
+
+        // Go to specific card
+        function goToCard(index) {
+            currentCard = index;
+            updateCards();
+        }
+
+        // Toggle auto-play
+        function toggleAutoPlay() {
+            const button = document.querySelector('.auto-play-toggle');
+            if (isAutoPlaying) {
+                clearInterval(autoPlayInterval);
+                button.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="m11.596 8.697-6.363 3.692c-.54.313-1.233-.066-1.233-.697V4.308c0-.63.692-1.01 1.233-.696l6.363 3.692a.802.802 0 0 1 0 1.393z"/>
+                    </svg>
+                    Auto Play
+                `;
+                isAutoPlaying = false;
+            } else {
+                startAutoPlay();
+                button.innerHTML = `
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/>
+                        <path d="M6.25 5C5.56 5 5 5.56 5 6.25v3.5a1.25 1.25 0 1 0 2.5 0V7.75h1v1.5a1.25 1.25 0 1 0 2.5 0v-3.5C11 5.56 10.44 5 9.75 5h-3.5z"/>
+                    </svg>
+                    Auto Play
+                `;
+                isAutoPlaying = true;
+            }
+        }
+
+        // Start auto-play
+        function startAutoPlay() {
+            autoPlayInterval = setInterval(nextCard, 4000);
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowLeft') previousCard();
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === ' ') {
+                e.preventDefault();
+                toggleAutoPlay();
+            }
+        });
+
+        // Touch/swipe support
+        let startX = 0;
+        let endX = 0;
+
+        document.addEventListener('touchstart', (e) => {
+            startX = e.changedTouches[0].screenX;
+        });
+
+        document.addEventListener('touchend', (e) => {
+            endX = e.changedTouches[0].screenX;
+            handleSwipe();
+        });
+
+        function handleSwipe() {
+            if (startX - endX > 50) nextCard();
+            if (endX - startX > 50) previousCard();
+        }
+
+        // Initialize everything
+        createIndicators();
+        updateCards();
+        startAutoPlay();
+
+        // Pause auto-play on hover
+        document.querySelector('.slider-container').addEventListener('mouseenter', () => {
+            if (isAutoPlaying) clearInterval(autoPlayInterval);
+        });
+
+        document.querySelector('.slider-container').addEventListener('mouseleave', () => {
+            if (isAutoPlaying) startAutoPlay();
+        });
+    </script>
+</body>
+</html>

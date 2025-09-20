@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Announcements</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            text-shadow: 3px 3px 6px rgba(0,0,0,0.4);
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+
+        .header .icon {
+            display: inline-block;
+            margin-right: 20px;
+            animation: bounce 2s infinite;
+        }
+
+        .header p {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            font-weight: 300;
+        }
+
+        .announcements-container {
+            position: relative;
+            min-height: 400px;
+        }
+
+        .announcement-item {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            margin-bottom: 30px;
+            overflow: hidden;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            cursor: pointer;
+            position: relative;
+            transform: scale(0);
+            opacity: 0;
+        }
+
+        .announcement-item.show {
+            transform: scale(1);
+            opacity: 1;
+            animation: cardAppear 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        .announcement-item:hover {
+            transform: translateY(-8px) scale(1.02);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .announcement-content {
+            padding: 35px;
+            position: relative;
+        }
+
+        .priority-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 8px 16px;
+            border-radius: 50px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .priority-high {
+            background: linear-gradient(45deg, #ff6b6b, #ee5a24);
+            color: white;
+            box-shadow: 0 4px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .priority-medium {
+            background: linear-gradient(45deg, #feca57, #ff9ff3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(254, 202, 87, 0.4);
+        }
+
+        .priority-low {
+            background: linear-gradient(45deg, #48dbfb, #0abde3);
+            color: white;
+            box-shadow: 0 4px 15px rgba(72, 219, 251, 0.4);
+        }
+
+        .date-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #667eea;
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+        }
+
+        .date-icon {
+            padding: 8px;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border-radius: 12px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .announcement-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            line-height: 1.3;
+            padding-right: 120px;
+        }
+
+        .announcement-description {
+            color: #5a6c7d;
+            line-height: 1.7;
+            font-size: 1.05rem;
+            margin-bottom: 25px;
+        }
+
+        .read-more-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .read-more-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
+            background: linear-gradient(45deg, #764ba2, #667eea);
+        }
+
+        .loading-screen {
+            text-align: center;
+            padding: 80px 20px;
+            color: white;
+        }
+
+        .loader {
+            width: 60px;
+            height: 60px;
+            border: 5px solid rgba(255, 255, 255, 0.3);
+            border-top: 5px solid white;
+            border-radius: 50%;
+            animation: spin 1.5s linear infinite;
+            margin: 0 auto 30px;
+        }
+
+        .empty-state {
+            text-align: center;
+            color: white;
+            padding: 80px 20px;
+            display: none;
+        }
+
+        .empty-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+        }
+
+        /* Modal Styles */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            display: none;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 1;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 25px;
+            max-width: 700px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            position: relative;
+            transform: scale(0.7);
+            transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .modal-overlay.active .modal-content {
+            transform: scale(1);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 40px;
+            text-align: center;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-title {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .modal-date {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+
+        .modal-body {
+            padding: 40px;
+        }
+
+        .modal-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            color: #5a6c7d;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes cardAppear {
+            0% {
+                transform: scale(0) rotateY(90deg);
+                opacity: 0;
+            }
+            50% {
+                transform: scale(1.05) rotateY(0deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(1) rotateY(0deg);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.5rem;
+            }
+            
+            .announcement-content {
+                padding: 25px;
+            }
+            
+            .announcement-title {
+                font-size: 1.4rem;
+                padding-right: 80px;
+            }
+            
+            .modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+            
+            .modal-header, .modal-body {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                <span class="icon">📢</span>
+                Announcements Hub
+            </h1>
+            <p>Your gateway to important updates and notifications</p>
+        </div>
+
+        <div class="announcements-container">
+            <!-- Loading Screen -->
+            <div class="loading-screen" id="loadingScreen">
+                <div class="loader"></div>
+                <h2>Loading latest announcements...</h2>
+                <p>Please wait while we fetch the latest updates</p>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState">
+                <div class="empty-icon">📭</div>
+                <h2>No announcements yet</h2>
+                <p>Check back later for important updates and news</p>
+            </div>
+
+            <!-- Announcements List -->
+            <div id="announcementsList"></div>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button class="modal-close" onclick="closeModal()">&times;</button>
+                <h2 class="modal-title" id="modalTitle"></h2>
+                <div class="modal-date" id="modalDate"></div>
+                <span class="priority-badge" id="modalPriority"></span>
+            </div>
+            <div class="modal-body">
+                <div class="modal-description" id="modalDescription"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let announcements = [];
+        let isLoading = true;
+
+        async function initializeFirebase() {
+            try {
+                const { initializeApp } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js');
+                const { getFirestore, collection, query, orderBy, onSnapshot } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js');
+
+                const firebaseConfig = {
+                    apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+                    authDomain: "vidhyashree-mlr.firebaseapp.com",
+                    projectId: "vidhyashree-mlr",
+                    storageBucket: "vidhyashree-mlr.firebasestorage.app",
+                    messagingSenderId: "469584837803",
+                    appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+                    measurementId: "G-LYEYRP433X"
+                };
+
+                const app = initializeApp(firebaseConfig);
+                const db = getFirestore(app);
+
+                const q = query(collection(db, "announcements"), orderBy("date", "desc"));
+                
+                onSnapshot(q, (snapshot) => {
+                    announcements = [];
+                    snapshot.forEach((doc) => {
+                        const data = doc.data();
+                        announcements.push({
+                            id: doc.id,
+                            title: data.title || 'Untitled',
+                            description: data.description || 'No description available',
+                            date: data.date || new Date().toISOString().split('T')[0],
+                            priority: data.priority || 'medium'
+                        });
+                    });
+
+                    renderAnnouncements();
+                    isLoading = false;
+                });
+
+            } catch (error) {
+                console.error("Firebase initialization failed:", error);
+                isLoading = false;
+                renderAnnouncements();
+            }
+        }
+
+        function renderAnnouncements() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const emptyState = document.getElementById('emptyState');
+            const announcementsList = document.getElementById('announcementsList');
+
+            loadingScreen.style.display = 'none';
+
+            if (announcements.length === 0 && !isLoading) {
+                emptyState.style.display = 'block';
+                announcementsList.innerHTML = '';
+                return;
+            }
+
+            emptyState.style.display = 'none';
+            announcementsList.innerHTML = '';
+            
+            announcements.forEach((announcement, index) => {
+                const item = createAnnouncementItem(announcement, index);
+                announcementsList.appendChild(item);
+            });
+        }
+
+        function createAnnouncementItem(announcement, index) {
+            const item = document.createElement('div');
+            item.className = 'announcement-item';
+            
+            const truncatedDesc = announcement.description.length > 200 
+                ? announcement.description.substring(0, 200) + '...' 
+                : announcement.description;
+
+            item.innerHTML = `
+                <div class="announcement-content">
+                    <span class="priority-badge priority-${announcement.priority}">
+                        ${announcement.priority}
+                    </span>
+                    
+                    <div class="date-info">
+                        <div class="date-icon">📅</div>
+                        <span>${formatDate(announcement.date)}</span>
+                    </div>
+                    
+                    <h3 class="announcement-title">${announcement.title}</h3>
+                    <p class="announcement-description">${truncatedDesc}</p>
+                    
+                    <button class="read-more-btn" onclick="openModal('${announcement.id}')">
+                        Read Full Announcement
+                        <span>→</span>
+                    </button>
+                </div>
+            `;
+
+            setTimeout(() => {
+                item.classList.add('show');
+            }, index * 150 + 500);
+
+            return item;
+        }
+
+        function formatDate(dateStr) {
+            const date = new Date(dateStr);
+            return date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+        }
+
+        function openModal(id) {
+            const announcement = announcements.find(a => a.id === id);
+            if (!announcement) return;
+
+            document.getElementById('modalTitle').textContent = announcement.title;
+            document.getElementById('modalDate').textContent = formatDate(announcement.date);
+            document.getElementById('modalDescription').textContent = announcement.description;
+            
+            const priorityBadge = document.getElementById('modalPriority');
+            priorityBadge.textContent = announcement.priority;
+            priorityBadge.className = `priority-badge priority-${announcement.priority}`;
+
+            document.getElementById('modalOverlay').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeModal() {
+            document.getElementById('modalOverlay').classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        document.getElementById('modalOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderAnnouncements();
+            initializeFirebase();
+        });
+    </script>
+</body>
+</html>

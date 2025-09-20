@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gallery - Vidyasshree Shikshana Kendra</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #ff6b35, #004e92, #ff9068, #0066cc);
+      background-size: 400% 400%;
+      animation: gradientShift 8s ease infinite;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    @keyframes gradientShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      text-align: center;
+      padding: 4rem 2rem;
+      background: linear-gradient(135deg, rgba(0,78,146,0.9), rgba(255,107,53,0.9));
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, rgba(255,255,255,0.1), transparent);
+      animation: rotate 10s linear infinite;
+    }
+
+    @keyframes rotate {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .header h1 {
+      font-size: 3.5rem;
+      font-weight: 800;
+      margin-bottom: 1rem;
+      text-shadow: 0 8px 16px rgba(0,0,0,0.3);
+      animation: textGlow 3s ease-in-out infinite alternate;
+      position: relative;
+      z-index: 1;
+    }
+
+    @keyframes textGlow {
+      0% { text-shadow: 0 8px 16px rgba(0,0,0,0.3), 0 0 20px rgba(255,107,53,0.5); }
+      100% { text-shadow: 0 8px 16px rgba(0,0,0,0.3), 0 0 30px rgba(0,102,204,0.7); }
+    }
+
+    .header p {
+      font-size: 1.3rem;
+      opacity: 0.95;
+      position: relative;
+      z-index: 1;
+      animation: fadeInUp 1.5s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 3rem 1rem;
+    }
+
+    .gallery-section {
+      margin-bottom: 5rem;
+      opacity: 0;
+      transform: translateY(60px);
+      animation: sectionSlide 1s ease-out forwards;
+    }
+
+    .gallery-section:nth-child(odd) { animation-delay: 0.1s; }
+    .gallery-section:nth-child(even) { animation-delay: 0.3s; }
+
+    @keyframes sectionSlide {
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-header {
+      text-align: center;
+      margin-bottom: 3rem;
+      position: relative;
+    }
+
+    .section-title {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      background: linear-gradient(135deg, #004e92, #ff6b35);
+      color: white;
+      padding: 1.5rem 3rem;
+      border-radius: 50px;
+      font-size: 1.8rem;
+      font-weight: 700;
+      box-shadow: 0 15px 35px rgba(0,78,146,0.3);
+      transition: all 0.4s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-title::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+      transition: left 0.6s ease;
+    }
+
+    .section-title:hover::before {
+      left: 100%;
+    }
+
+    .section-title:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 45px rgba(0,78,146,0.4);
+    }
+
+    .section-icon {
+      width: 30px;
+      height: 30px;
+      animation: iconPulse 2s ease-in-out infinite;
+    }
+
+    @keyframes iconPulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
+
+    .section-description {
+      max-width: 600px;
+      margin: 2rem auto 0;
+      font-size: 1.1rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+      opacity: 0;
+      animation: descFade 1s ease-out 0.5s forwards;
+    }
+
+    @keyframes descFade {
+      to { opacity: 1; }
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 2rem;
+      perspective: 1000px;
+    }
+
+    .gallery-item {
+      position: relative;
+      border-radius: 20px;
+      overflow: hidden;
+      background: white;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+      transition: all 0.6s cubic-bezier(0.23, 1, 0.320, 1);
+      cursor: pointer;
+      transform-style: preserve-3d;
+    }
+
+    .gallery-item:hover {
+      transform: translateY(-15px) rotateX(5deg) rotateY(5deg);
+      box-shadow: 0 25px 50px rgba(0,78,146,0.2);
+    }
+
+    .gallery-item::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, rgba(255,107,53,0.1), rgba(0,102,204,0.1));
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      z-index: 1;
+    }
+
+    .gallery-item:hover::after {
+      opacity: 1;
+    }
+
+    .image-container {
+      position: relative;
+      height: 200px;
+      background: linear-gradient(135deg, #ff6b35, #0066cc);
+      overflow: hidden;
+    }
+
+    .gallery-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: all 0.6s ease;
+      position: relative;
+    }
+
+    .gallery-item:hover .gallery-image {
+      transform: scale(1.05);
+    }
+
+    .image-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(45deg, 
+        rgba(255,107,53,0.1) 25%, rgba(0,102,204,0.1) 25%, 
+        rgba(0,102,204,0.1) 50%, rgba(255,107,53,0.1) 50%, 
+        rgba(255,107,53,0.1) 75%, rgba(0,102,204,0.1) 75%);
+      background-size: 30px 30px;
+      opacity: 0;
+      transition: all 0.4s ease;
+      animation: patternMove 20s linear infinite;
+    }
+
+    @keyframes patternMove {
+      0% { background-position: 0 0; }
+      100% { background-position: 30px 30px; }
+    }
+
+    .gallery-item:hover .image-overlay {
+      opacity: 1;
+    }
+
+    .image-overlay::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.8s ease;
+    }
+
+    .gallery-item:hover .image-overlay::before {
+      width: 300px;
+      height: 300px;
+    }
+
+    .image-caption {
+      padding: 1.5rem;
+      background: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    .image-title {
+      font-size: 1.2rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #004e92, #ff6b35);
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 0.5rem;
+      position: relative;
+    }
+
+    .image-title::after {
+      content: '';
+      position: absolute;
+      bottom: -5px;
+      left: 0;
+      width: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #ff6b35, #0066cc);
+      transition: width 0.5s ease;
+      border-radius: 2px;
+    }
+
+    .gallery-item:hover .image-title::after {
+      width: 100%;
+    }
+
+    .image-desc {
+      color: #666;
+      line-height: 1.6;
+      font-size: 0.9rem;
+    }
+
+    .back-btn {
+      position: fixed;
+      top: 2rem;
+      left: 2rem;
+      background: linear-gradient(135deg, #004e92, #ff6b35);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 50px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,78,146,0.3);
+      transition: all 0.4s ease;
+      z-index: 100;
+      transform: translateX(-100px);
+      animation: slideInLeft 1s ease-out 0.5s forwards;
+    }
+
+    @keyframes slideInLeft {
+      to { transform: translateX(0); }
+    }
+
+    .back-btn:hover {
+      transform: translateY(-3px) scale(1.05);
+      box-shadow: 0 15px 40px rgba(0,78,146,0.4);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      backdrop-filter: blur(5px);
+      animation: fadeIn 0.4s ease;
+    }
+
+    .modal-content {
+      position: relative;
+      margin: 5% auto;
+      padding: 2rem;
+      width: 90%;
+      max-width: 700px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.95), rgba(255,255,255,0.9));
+      border-radius: 25px;
+      box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+      animation: modalSlide 0.5s ease;
+      backdrop-filter: blur(10px);
+    }
+
+    @keyframes modalSlide {
+      from { transform: translateY(-50px) scale(0.9); opacity: 0; }
+      to { transform: translateY(0) scale(1); opacity: 1; }
+    }
+
+    .close {
+      position: absolute;
+      right: 1.5rem;
+      top: 1.5rem;
+      font-size: 2rem;
+      font-weight: bold;
+      cursor: pointer;
+      color: #ff6b35;
+      transition: all 0.3s ease;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255,107,53,0.1);
+    }
+
+    .close:hover {
+      background: rgba(255,107,53,0.2);
+      transform: rotate(90deg);
+    }
+
+    .modal-image {
+      width: 100%;
+      height: 300px;
+      background: linear-gradient(135deg, #ff6b35, #004e92);
+      border-radius: 15px;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .modal-image::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(transparent, rgba(255,255,255,0.1), transparent, rgba(255,255,255,0.1));
+      animation: rotate 8s linear infinite;
+    }
+
+    .floating-particles {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .particle {
+      position: absolute;
+      width: 4px;
+      height: 4px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 50%;
+      animation: float 15s infinite linear;
+    }
+
+    .particle:nth-child(1) { left: 10%; animation-delay: 0s; }
+    .particle:nth-child(2) { left: 20%; animation-delay: 2s; }
+    .particle:nth-child(3) { left: 30%; animation-delay: 4s; }
+    .particle:nth-child(4) { left: 40%; animation-delay: 6s; }
+    .particle:nth-child(5) { left: 50%; animation-delay: 8s; }
+    .particle:nth-child(6) { left: 60%; animation-delay: 10s; }
+    .particle:nth-child(7) { left: 70%; animation-delay: 12s; }
+    .particle:nth-child(8) { left: 80%; animation-delay: 14s; }
+    .particle:nth-child(9) { left: 90%; animation-delay: 1s; }
+
+    @keyframes float {
+      0% { 
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 0;
+      }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { 
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header h1 { font-size: 2.5rem; }
+      .container { padding: 2rem 1rem; }
+      .gallery-grid { 
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+      }
+      .section-title { 
+        font-size: 1.4rem;
+        padding: 1rem 2rem;
+      }
+      .back-btn {
+        top: 1rem;
+        left: 1rem;
+        padding: 0.8rem 1.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="floating-particles">
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+    <div class="particle"></div>
+  </div>
+
+  <button class="back-btn" onclick="goBack()">← Back to Home</button>
+
+  <div class="header">
+    <h1>School Gallery</h1>
+    <p>Discover the Excellence at Vidyasshree Shikshana Kendra</p>
+  </div>
+
+  <div class="container">
+    <!-- School Building Section -->
+    <div class="gallery-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M12 3L2 12h3v8h14v-8h3L12 3zm0 2.4L18 11v7h-3v-4h-6v4H6v-7l6-5.6z"/>
+          </svg>
+          School Building
+        </div>
+        <p class="section-description">Our magnificent school building stands as a beacon of education, designed with modern architecture while maintaining a warm, welcoming atmosphere for learning and growth.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('School Building - Main Block', 'The impressive main building houses our primary classrooms, administrative offices, and central facilities.')">
+          <div class="image-container">
+            <img src="Main building.jpg" alt="School Building" class="gallery-image">
+            <div class="image-overlay"></div>
+          </div>
+          <div class="image-caption">
+            <div class="image-title">Main Building</div>
+            <div class="image-desc">The heart of our educational campus with state-of-the-art facilities</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Teachers Section -->
+    <div class="gallery-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2M21 9V20C21 21.1 20.1 22 19 22H5C3.9 22 3 21.1 3 20V9L1 7L2.41 5.59L21.59 5.59L23 7L21 9M19 9.83L12 15.33L5 9.83V20H19V9.83Z"/>
+          </svg>
+          Our Teachers
+        </div>
+        <p class="section-description">Meet our dedicated faculty members who are passionate about nurturing young minds and fostering academic excellence through innovative teaching methods.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('Teaching Faculty', 'Our experienced teachers bringing knowledge and inspiration to every classroom.')">
+          <div class="image-container">
+            <img src="teacher.jpg" alt="Teachers" class="gallery-image">
+            <div class="image-overlay"></div>
+          </div>
+          <div class="image-caption">
+            <div class="image-title">Teaching Staff</div>
+            <div class="image-desc">Dedicated educators shaping tomorrow's leaders</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Students Section -->
+    <div class="gallery-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M12 3L1 9L12 15L21 10.09V17H23V9M5 13.18V17.18L12 21L19 17.18V13.18L12 17L5 13.18Z"/>
+          </svg>
+          Our Students
+        </div>
+        <p class="section-description">Our vibrant student community represents the future of our nation, actively engaged in learning, sports, cultural activities, and personal development.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('Students in Action', 'Our bright students actively participating in classroom discussions and learning activities.')">
+          <div class="image-container">
+            <img src="2025.jpg" alt="Students" class="gallery-image">
+            <div class="image-overlay"></div>
+          </div>
+          <div class="image-caption">
+            <div class="image-title">Active Learners</div>
+            <div class="image-desc">Students engaged in interactive learning sessions</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Support Staff Section -->
+    <div class="gallery-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M16 4C16.6 4 17 4.4 17 5S16.6 6 16 6 15 5.6 15 5 15.4 4 16 4M13 2.1C13.4 2 13.9 2.2 14.2 2.6L16.5 5.5C17.1 6.3 17.9 6.8 18.7 7L20.5 7.6C21 7.8 21.2 8.4 21 8.9L19.3 12.8C19.1 13.3 19.1 13.8 19.2 14.3L19.7 16.9C19.8 17.4 19.4 17.8 18.9 17.8L15.8 17.3C15.3 17.2 14.7 17.3 14.2 17.6L11.9 18.8C11.5 19 11 18.7 10.9 18.2L10.4 15.1C10.3 14.6 10.1 14.1 9.7 13.7L7.5 11.4C7.1 11 7.1 10.3 7.6 10L10.6 8.3C11 8.1 11.4 7.7 11.6 7.2L13.1 3.9C13.2 3.4 13.7 3.1 14.2 3.1"/>
+          </svg>
+          Support Staff
+        </div>
+        <p class="section-description">Our dedicated support staff ensures smooth daily operations, maintaining a clean, safe, and conducive environment for learning and teaching.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('School Drivers', 'Our responsible drivers ensure safe transportation for students to and from school daily.')">
+          <div class="image-container">
+            <img src="driver.jpg" alt="School Drivers" class="gallery-image">
+            <div class="image-overlay"></div>
+          </div>
+          <div class="image-caption">
+            <div class="image-title">Transportation Team</div>
+            <div class="image-desc">Safe and reliable student transportation services</div>
+          </div>
+        </div>
+      </div>
+    </div>
+        <div class="gallery-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M16 4C16.6 4 17 4.4 17 5S16.6 6 16 6 15 5.6 15 5 15.4 4 16 4M13 2.1C13.4 2 13.9 2.2 14.2 2.6L16.5 5.5C17.1 6.3 17.9 6.8 18.7 7L20.5 7.6C21 7.8 21.2 8.4 21 8.9L19.3 12.8C19.1 13.3 19.1 13.8 19.2 14.3L19.7 16.9C19.8 17.4 19.4 17.8 18.9 17.8L15.8 17.3C15.3 17.2 14.7 17.3 14.2 17.6L11.9 18.8C11.5 19 11 18.7 10.9 18.2L10.4 15.1C10.3 14.6 10.1 14.1 9.7 13.7L7.5 11.4C7.1 11 7.1 10.3 7.6 10L10.6 8.3C11 8.1 11.4 7.7 11.6 7.2L13.1 3.9C13.2 3.4 13.7 3.1 14.2 3.1"/>
+          </svg>
+          Support Staff
+        </div>
+        <p class="section-description">Our dedicated support staff ensures smooth daily operations, maintaining a clean, safe, and conducive environment for learning and teaching.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('School Drivers', 'Our responsible drivers ensure safe transportation for students to and from school daily.')">
+          <div class="image-container">
+            <img src="maid.jpg" alt="School Drivers" class="gallery-image">
+            <div class="image-overlay"></div>
+          </div>
+          <div class="image-caption">
+            <div class="image-title">Helpers Team</div>
+            <div class="image-desc">Safe and reliable student services</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+       <!-- Library Section -->
+    <div class="gallery-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2L13.09 8.26L22 9L13.09 9.74L12 16L10.91 9.74L2 9L10.91 8.26L12 2M4 11V13H12V11H4M18 11V13H22V11H18M4 15V17H18V15H4"/>
+          </svg>
+          Library
+        </div>
+        <p class="section-description">Our well-stocked library serves as a treasure trove of knowledge with thousands of books, journals, and digital resources fostering reading habits and research skills.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('School Library', 'Extensive collection of books, magazines, and educational resources for all age groups.')">
+          <div class="image-container">
+            <img src="library.jpg" alt="School Library" class="gallery-image">
+            <div class="image-overlay"></div>
+          </div>
+          <div class="image-caption">
+            <div class="image-title">Reading Haven</div>
+            <div class="image-desc">Vast collection of books and learning resources</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Prayer Hall Section -->
+    <div class="gallery-section">
+      <div class="section-header">
+        <div class="section-title">
+          <svg class="section-icon" viewBox="0 0 24 24" fill="white">
+            <path d="M12 2L21.09 8.26L22 9L21.09 9.74L12 16L2.91 9.74L2 9L2.91 8.26L12 2M12 4.15L5.18 9L12 13.85L18.82 9L12 4.15Z"/>
+          </svg>
+          Prayer Hall
+        </div>
+        <p class="section-description">Our serene prayer hall provides a peaceful space for meditation, reflection, and spiritual growth, promoting values of tolerance, respect, and inner peace.</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" onclick="openModal('Prayer Hall', 'Peaceful space for meditation, prayers, and spiritual reflection for students and staff.')">
+          <div class="image-container">
+            <img src="prayerhall.jpg" alt="Prayer Hall" class="gallery-image">
+            <div class="image-overlay"></div>
+          </div>
+          <div class="image-caption">
+            <div class="image-title">Spiritual Center</div>
+            <div class="image-desc">Fostering spiritual growth and inner peace</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="imageModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <div class="modal-image" id="modalImage">IMAGE PREVIEW</div>
+      <h3 id="modalTitle">Image Title</h3>
+      <p id="modalDescription">Image description goes here.</p>
+    </div>
+  </div>
+
+  <script>
+    function openModal(title, description) {
+      document.getElementById('modalTitle').textContent = title;
+      document.getElementById('modalDescription').textContent = description;
+      document.getElementById('imageModal').style.display = 'block';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('imageModal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('imageModal');
+      if (event.target === modal) {
+        closeModal();
+      }
+    }
+
+    // Keyboard navigation
+    document.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape') {
+        closeModal();
+      }
+    });
+
+    // Intersection Observer for scroll animations
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.1 });
+
+    // Observe all gallery sections
+    document.addEventListener('DOMContentLoaded', function() {
+      const sections = document.querySelectorAll('.gallery-section');
+      sections.forEach(section => {
+        observer.observe(section);
+      });
+    });
+
+    // Add parallax effect on scroll
+    window.addEventListener('scroll', function() {
+      const scrolled = window.pageYOffset;
+      const rate = scrolled * -0.5;
+      
+      document.querySelector('.header::before').style.transform = `translateY(${rate}px)`;
+    });
+  </script>
+</body>
+</html>

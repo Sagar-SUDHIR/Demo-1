@@ -1,0 +1,1127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Results Management - Vidyasshree Shikshana Kendra</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #667eea, #764ba2, #f093fb, #f5576c);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      min-height: 100vh;
+      padding: 2rem 0;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: white;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      animation: fadeIn 1s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      background: rgba(255,255,255,0.2);
+      color: white;
+      border: 2px solid rgba(255,255,255,0.3);
+      padding: 0.75rem 1.5rem;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      text-decoration: none;
+    }
+
+    .nav-btn:hover, .nav-btn.active {
+      background: rgba(255,255,255,0.3);
+      border-color: rgba(255,255,255,0.5);
+      transform: translateY(-2px);
+    }
+
+    .section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+      backdrop-filter: blur(10px);
+      animation: slideUp 0.8s ease forwards;
+      display: none;
+    }
+
+    .section.active {
+      display: block;
+    }
+
+    @keyframes slideUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .section-title {
+      color: #667eea;
+      font-size: 1.8rem;
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Class Selection */
+    .class-selection {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .class-option {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      padding: 1rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+
+    .class-option:hover {
+      border-color: #667eea;
+      transform: translateY(-2px);
+    }
+
+    .class-option.selected {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: white;
+      border-color: #667eea;
+    }
+
+    .save-classes-btn {
+      background: linear-gradient(135deg, #2ecc71, #27ae60);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .save-classes-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(46,204,113,0.4);
+    }
+
+    /* Teaching Classes Cards */
+    .teaching-classes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .teaching-class-card {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      padding: 1.5rem;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      animation: cardIn 0.3s ease;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: scale(0.9); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    .teaching-class-card:hover {
+      border-color: #667eea;
+      box-shadow: 0 8px 25px rgba(102,126,234,0.2);
+      transform: translateY(-2px);
+    }
+
+    .class-name {
+      font-size: 1.2rem;
+      font-weight: bold;
+      color: #333;
+      margin-bottom: 0.5rem;
+    }
+
+    .class-students-count {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Exam Form */
+    .exam-form {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      border-color: #667eea;
+      outline: none;
+      box-shadow: 0 0 10px rgba(102,126,234,0.3);
+    }
+
+    /* Students List */
+    .students-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .student-card {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      padding: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .student-card:hover {
+      border-color: #667eea;
+    }
+
+    .student-info {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .student-avatar {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-weight: bold;
+    }
+
+    .student-details h4 {
+      margin: 0 0 0.25rem 0;
+      color: #333;
+    }
+
+    .student-details p {
+      margin: 0;
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    .marks-input {
+      width: 100%;
+      padding: 0.5rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 5px;
+      font-size: 1rem;
+      text-align: center;
+    }
+
+    .marks-input:focus {
+      border-color: #667eea;
+      outline: none;
+    }
+
+    .save-results-btn {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white;
+      border: none;
+      padding: 1rem 2rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      margin-top: 2rem;
+    }
+
+    .save-results-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(243,156,18,0.4);
+    }
+
+    /* Search Section */
+    .search-container {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 2rem;
+      flex-wrap: wrap;
+    }
+
+    .search-input {
+      flex: 1;
+      min-width: 200px;
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      font-size: 1rem;
+    }
+
+    .search-select {
+      padding: 0.75rem;
+      border: 2px solid #e1e8ed;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: white;
+      min-width: 150px;
+    }
+
+    .search-btn {
+      background: linear-gradient(135deg, #3498db, #2980b9);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 10px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .search-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(52,152,219,0.4);
+    }
+
+    /* Results Display */
+    .results-container {
+      background: white;
+      border: 2px solid #e1e8ed;
+      border-radius: 15px;
+      padding: 2rem;
+    }
+
+    .results-header {
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 2px solid #e1e8ed;
+    }
+
+    .results-title {
+      font-size: 1.5rem;
+      color: #667eea;
+      margin-bottom: 0.5rem;
+    }
+
+    .results-subtitle {
+      color: #666;
+    }
+
+    .results-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+
+    .results-table th,
+    .results-table td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid #e1e8ed;
+    }
+
+    .results-table th {
+      background: #f8f9fa;
+      font-weight: 600;
+      color: #333;
+    }
+
+    .results-table tr:hover {
+      background: #f8f9fa;
+    }
+
+    .edit-marks-btn {
+      background: linear-gradient(135deg, #f39c12, #e67e22);
+      color: white;
+      border: none;
+      padding: 0.25rem 0.5rem;
+      border-radius: 5px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .edit-marks-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .message {
+      padding: 1rem;
+      border-radius: 10px;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .message.success {
+      background: rgba(46,204,113,0.1);
+      color: #27ae60;
+      border: 2px solid rgba(46,204,113,0.3);
+    }
+
+    .message.error {
+      background: rgba(231,76,60,0.1);
+      color: #c0392b;
+      border: 2px solid rgba(231,76,60,0.3);
+    }
+
+    .loading {
+      text-align: center;
+      padding: 2rem;
+      color: #666;
+    }
+
+    /* Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1000;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.5);
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-content {
+      background: white;
+      margin: 5% auto;
+      padding: 2rem;
+      border-radius: 20px;
+      width: 90%;
+      max-width: 600px;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    .modal h3 {
+      color: #667eea;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: -10px;
+    }
+
+    .close:hover {
+      color: #667eea;
+    }
+
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      max-width: 300px;
+      display: none;
+      z-index: 1000;
+    }
+
+    @media (max-width: 768px) {
+      .search-container {
+        flex-direction: column;
+      }
+      
+      .students-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .teaching-classes {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>Results Management</h1>
+    <p id="teacher-info">Loading teacher information...</p>
+  </div>
+
+  <div class="nav-buttons">
+    <button class="nav-btn active" onclick="switchSection('setup')">Class Setup</button>
+    <button class="nav-btn" onclick="switchSection('results')">Enter Results</button>
+    <button class="nav-btn" onclick="switchSection('search')">Search Results</button>
+    <a href="admin.html" class="nav-btn">Back to Dashboard</a>
+  </div>
+
+  <div class="container">
+    <!-- Class Setup Section -->
+    <div id="setup-section" class="section active">
+      <h2 class="section-title">Select Teaching Classes</h2>
+      <div id="message-container-setup"></div>
+      
+      <p style="margin-bottom: 2rem; color: #666;">Select all the classes you teach:</p>
+      
+      <div class="class-selection" id="class-selection">
+        <div class="class-option" data-class="LKG">LKG</div>
+        <div class="class-option" data-class="UKG">UKG</div>
+        <div class="class-option" data-class="1st">1st</div>
+        <div class="class-option" data-class="2nd">2nd</div>
+        <div class="class-option" data-class="3rd">3rd</div>
+        <div class="class-option" data-class="4th">4th</div>
+        <div class="class-option" data-class="5th">5th</div>
+        <div class="class-option" data-class="6th">6th</div>
+        <div class="class-option" data-class="7th">7th</div>
+        <div class="class-option" data-class="8th">8th</div>
+        <div class="class-option" data-class="9th">9th</div>
+        <div class="class-option" data-class="10th">10th</div>
+      </div>
+      
+      <button class="save-classes-btn" onclick="saveTeachingClasses()">Save Teaching Classes</button>
+      
+      <!-- Saved Teaching Classes -->
+      <div id="teaching-classes-container" style="margin-top: 3rem;">
+        <h3 style="color: #667eea; margin-bottom: 1rem;">Your Teaching Classes</h3>
+        <div class="teaching-classes" id="teaching-classes-grid">
+          <div class="loading">No classes selected yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Results Entry Section -->
+    <div id="results-section" class="section">
+      <h2 class="section-title">Enter Exam Results</h2>
+      <div id="message-container-results"></div>
+      
+      <div id="class-selection-results" class="loading">
+        Please set up your teaching classes first
+      </div>
+    </div>
+
+    <!-- Search Results Section -->
+    <div id="search-section" class="section">
+      <h2 class="section-title">Search & View Results</h2>
+      <div id="message-container-search"></div>
+      
+      <div class="search-container">
+        <input type="text" class="search-input" id="exam-search" placeholder="Search exam name (e.g., Christmas Exam)">
+        <select class="search-select" id="class-search">
+          <option value="">Select Class</option>
+        </select>
+        <button class="search-btn" onclick="searchResults()">Search Results</button>
+      </div>
+      
+      <div id="search-results-container">
+        <p style="color: #666; text-align: center; padding: 2rem;">Use the search above to find exam results</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Marks Modal -->
+  <div id="editModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeEditModal()">&times;</span>
+      <h3>Edit Student Marks</h3>
+      <div id="edit-form-container"></div>
+    </div>
+  </div>
+
+  <!-- Debug Info -->
+  <div class="debug-info" id="debugInfo"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, collection, getDocs, doc, setDoc, getDoc, updateDoc, query, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+      authDomain: "vidhyashree-mlr.firebaseapp.com",
+      projectId: "vidhyashree-mlr",
+      storageBucket: "vidhyashree-mlr.firebasestorage.app",
+      messagingSenderId: "469584837803",
+      appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+      measurementId: "G-LYEYRP433X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    let currentUser = null;
+    let teacherData = null;
+    let teachingClasses = [];
+    let currentClassStudents = [];
+    let currentExamData = null;
+
+    // Debug function
+    function debug(message) {
+      console.log('RESULTS DEBUG:', message);
+      const debugInfo = document.getElementById('debugInfo');
+      debugInfo.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+      debugInfo.style.display = 'block';
+      setTimeout(() => {
+        debugInfo.style.display = 'none';
+      }, 5000);
+    }
+
+    // Initialize
+    onAuthStateChanged(auth, async (user) => {
+      if (user) {
+        currentUser = user;
+        debug(`User logged in: ${user.uid}`);
+        await loadTeacherData();
+        await loadTeachingClasses();
+        populateSearchOptions();
+      } else {
+        debug('User not authenticated - redirecting');
+        window.location.href = 'admin.html';
+      }
+    });
+
+    async function loadTeacherData() {
+      try {
+        debug('Loading teacher data...');
+        
+        // First try to get from admin-requests
+        const adminRequestsQuery = query(
+          collection(db, 'admin-requests'), 
+          where('userId', '==', currentUser.uid),
+          where('status', '==', 'approved')
+        );
+        const adminSnapshot = await getDocs(adminRequestsQuery);
+        
+        if (!adminSnapshot.empty) {
+          teacherData = adminSnapshot.docs[0].data();
+          teacherData.docId = adminSnapshot.docs[0].id;
+          debug(`Teacher data loaded from admin-requests: ${JSON.stringify(teacherData)}`);
+        } else {
+          // Try to get from users collection
+          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
+          if (userDoc.exists()) {
+            const userData = userDoc.data();
+            if (userData.userType === 'admin' && userData.adminStatus === 'approved') {
+              teacherData = userData;
+              teacherData.userId = currentUser.uid;
+              debug(`Teacher data loaded from users: ${JSON.stringify(teacherData)}`);
+            }
+          }
+        }
+
+        if (teacherData) {
+          document.getElementById('teacher-info').textContent = 
+            `Teacher: ${teacherData.name || 'Unknown'} | Subject: ${teacherData.subject || 'Not Specified'}`;
+        } else {
+          debug('No approved teacher data found');
+          showMessage('Teacher account not found or not approved', 'error', 'setup');
+        }
+      } catch (error) {
+        debug(`Error loading teacher data: ${error.message}`);
+        console.error('Error loading teacher data:', error);
+      }
+    }
+
+    async function loadTeachingClasses() {
+      if (!teacherData || !teacherData.userId) {
+        debug('No teacher data available for loading teaching classes');
+        return;
+      }
+
+      try {
+        debug(`Loading teaching classes for teacher: ${teacherData.userId}`);
+        const teachingDoc = await getDoc(doc(db, 'teaching-classes', teacherData.userId));
+        
+        if (teachingDoc.exists()) {
+          teachingClasses = teachingDoc.data().classes || [];
+          debug(`Teaching classes loaded: ${JSON.stringify(teachingClasses)}`);
+          renderTeachingClasses();
+          renderResultsSection();
+        } else {
+          debug('No teaching classes found');
+          teachingClasses = [];
+          renderTeachingClasses();
+          renderResultsSection();
+        }
+      } catch (error) {
+        debug(`Error loading teaching classes: ${error.message}`);
+        console.error('Error loading teaching classes:', error);
+      }
+    }
+
+    function renderTeachingClasses() {
+      const container = document.getElementById('teaching-classes-grid');
+      
+      if (teachingClasses.length === 0) {
+        container.innerHTML = '<div class="loading">No classes selected yet</div>';
+        return;
+      }
+
+      container.innerHTML = teachingClasses.map(className => `
+        <div class="teaching-class-card">
+          <div class="class-name">${className}</div>
+          <div class="class-students-count">Click to enter results</div>
+        </div>
+      `).join('');
+    }
+
+    function renderResultsSection() {
+      const container = document.getElementById('class-selection-results');
+      
+      if (teachingClasses.length === 0) {
+        container.innerHTML = '<div class="loading">Please set up your teaching classes first</div>';
+        return;
+      }
+
+      container.innerHTML = `
+        <div class="teaching-classes">
+          ${teachingClasses.map(className => `
+            <div class="teaching-class-card" onclick="selectClassForResults('${className}')">
+              <div class="class-name">${className}</div>
+              <div class="class-students-count">Enter exam results</div>
+            </div>
+          `).join('')}
+        </div>
+      `;
+    }
+
+    // Global functions
+    window.switchSection = function(section) {
+      document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.section').forEach(sec => sec.classList.remove('active'));
+      
+      event.target.classList.add('active');
+      document.getElementById(`${section}-section`).classList.add('active');
+    };
+
+    // Class selection functionality
+    document.addEventListener('click', function(event) {
+      if (event.target.classList.contains('class-option')) {
+        event.target.classList.toggle('selected');
+      }
+    });
+
+    window.saveTeachingClasses = async function() {
+      const selectedClasses = Array.from(document.querySelectorAll('.class-option.selected'))
+        .map(option => option.dataset.class);
+      
+      if (selectedClasses.length === 0) {
+        showMessage('Please select at least one class', 'error', 'setup');
+        return;
+      }
+
+      try {
+        debug(`Saving ${selectedClasses.length} teaching classes`);
+        showMessage('Saving teaching classes...', 'success', 'setup');
+        
+        await setDoc(doc(db, 'teaching-classes', teacherData.userId), {
+          teacherId: teacherData.userId,
+          teacherName: teacherData.name,
+          classes: selectedClasses,
+          updatedAt: new Date().toISOString()
+        });
+
+        teachingClasses = selectedClasses;
+        renderTeachingClasses();
+        renderResultsSection();
+        populateSearchOptions();
+        
+        showMessage('Teaching classes saved successfully!', 'success', 'setup');
+        debug('Teaching classes saved successfully');
+      } catch (error) {
+        debug(`Error saving teaching classes: ${error.message}`);
+        showMessage('Error saving classes: ' + error.message, 'error', 'setup');
+      }
+    };
+
+    window.selectClassForResults = async function(className) {
+      try {
+        debug(`Loading students for class: ${className}`);
+        
+        // Load students from the class-lists collection (from attendance system)
+        const classListDoc = await getDoc(doc(db, 'class-lists', `${teacherData.userId}-classlist`));
+        
+        if (!classListDoc.exists()) {
+          debug('No class list found - trying to load all students');
+          // If no specific class list, load all students from users collection
+          const studentsQuery = query(collection(db, 'users'), where('userType', '==', 'student'));
+          const studentsSnapshot = await getDocs(studentsQuery);
+          
+          currentClassStudents = studentsSnapshot.docs.map(doc => ({
+            id: doc.id,
+            ...doc.data(),
+            studentId: doc.data().studentId || doc.id,
+            email: doc.data().email
+          }));
+          
+          debug(`Loaded ${currentClassStudents.length} students from users collection`);
+        } else {
+          const classData = classListDoc.data();
+          currentClassStudents = classData.students || [];
+          debug(`Loaded ${currentClassStudents.length} students from class list`);
+        }
+        
+        if (currentClassStudents.length === 0) {
+          showMessage(`No students found. Please set up your class list in the attendance management section first.`, 'error', 'results');
+          return;
+        }
+
+        renderExamForm(className);
+      } catch (error) {
+        debug(`Error loading class students: ${error.message}`);
+        console.error('Error loading class students:', error);
+        showMessage('Error loading students: ' + error.message, 'error', 'results');
+      }
+    };
+
+    function renderExamForm(className) {
+      const container = document.getElementById('class-selection-results');
+      
+      container.innerHTML = `
+        <div class="exam-form">
+          <h3 style="color: #667eea; margin-bottom: 1rem;">Enter Results for ${className}</h3>
+          
+          <div class="form-group">
+            <label class="form-label">Exam Name/Title</label>
+            <input type="text" class="form-input" id="exam-name" placeholder="e.g., Christmas Exam Result, Mid-term Exam, etc." required>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Total Marks</label>
+            <input type="number" class="form-input" id="total-marks" placeholder="e.g., 100" required>
+          </div>
+          
+          <div class="students-grid">
+            ${currentClassStudents.map(student => `
+              <div class="student-card">
+                <div class="student-info">
+                  <div class="student-avatar">${student.name.charAt(0).toUpperCase()}</div>
+                  <div class="student-details"><h4>${student.name}</h4>
+                    <p>Email: ${student.email}</p>
+                    <p>ID: ${student.studentId || student.id}</p>
+                  </div>
+                </div>
+                <input type="number" class="marks-input" id="marks-${student.id}" placeholder="Enter marks" min="0">
+              </div>
+            `).join('')}
+          </div>
+          
+          <button class="save-results-btn" onclick="saveExamResults('${className}')">Save Exam Results</button>
+        </div>
+      `;
+    }
+
+    window.saveExamResults = async function(className) {
+      const examName = document.getElementById('exam-name').value.trim();
+      const totalMarks = document.getElementById('total-marks').value;
+      
+      if (!examName || !totalMarks) {
+        showMessage('Please fill in exam name and total marks', 'error', 'results');
+        return;
+      }
+
+      const results = {};
+      let hasMarks = false;
+      
+      currentClassStudents.forEach(student => {
+        const marksInput = document.getElementById(`marks-${student.id}`);
+        if (marksInput.value !== '') {
+          results[student.id] = {
+            studentId: student.studentId || student.id,
+            name: student.name,
+            email: student.email,
+            marks: parseInt(marksInput.value),
+            totalMarks: parseInt(totalMarks),
+            percentage: ((parseInt(marksInput.value) / parseInt(totalMarks)) * 100).toFixed(2)
+          };
+          hasMarks = true;
+        }
+      });
+
+      if (!hasMarks) {
+        showMessage('Please enter marks for at least one student', 'error', 'results');
+        return;
+      }
+
+      try {
+        debug(`Saving exam results for ${Object.keys(results).length} students`);
+        showMessage('Saving exam results...', 'success', 'results');
+        
+        const examId = `${teacherData.userId}-${className}-${examName.replace(/\s+/g, '-').toLowerCase()}`;
+        
+        await setDoc(doc(db, 'exam-results', examId), {
+          teacherId: teacherData.userId,
+          teacherName: teacherData.name,
+          className: className,
+          examName: examName,
+          totalMarks: parseInt(totalMarks),
+          results: results,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
+
+        showMessage('Exam results saved successfully!', 'success', 'results');
+        debug('Exam results saved successfully');
+        
+        // Clear form
+        document.getElementById('exam-name').value = '';
+        document.getElementById('total-marks').value = '';
+        currentClassStudents.forEach(student => {
+          const marksInput = document.getElementById(`marks-${student.id}`);
+          if (marksInput) marksInput.value = '';
+        });
+        
+      } catch (error) {
+        debug(`Error saving exam results: ${error.message}`);
+        showMessage('Error saving results: ' + error.message, 'error', 'results');
+      }
+    };
+
+    function populateSearchOptions() {
+      const classSelect = document.getElementById('class-search');
+      
+      const options = teachingClasses.map(className => 
+        `<option value="${className}">${className}</option>`
+      ).join('');
+      
+      classSelect.innerHTML = `<option value="">Select Class</option>${options}`;
+    }
+
+    window.searchResults = async function() {
+      const examName = document.getElementById('exam-search').value.trim();
+      const className = document.getElementById('class-search').value;
+      
+      if (!examName || !className) {
+        showMessage('Please enter exam name and select class', 'error', 'search');
+        return;
+      }
+
+      try {
+        debug(`Searching for results: ${examName} in class ${className}`);
+        showMessage('Searching for results...', 'success', 'search');
+        
+        const examId = `${teacherData.userId}-${className}-${examName.replace(/\s+/g, '-').toLowerCase()}`;
+        
+        const examDoc = await getDoc(doc(db, 'exam-results', examId));
+        
+        if (!examDoc.exists()) {
+          showMessage('No results found for the specified exam and class', 'error', 'search');
+          document.getElementById('search-results-container').innerHTML = 
+            '<p style="color: #666; text-align: center; padding: 2rem;">No results found</p>';
+          return;
+        }
+
+        const examData = examDoc.data();
+        currentExamData = { id: examId, ...examData };
+        displaySearchResults(examData);
+        
+      } catch (error) {
+        debug(`Error searching results: ${error.message}`);
+        showMessage('Error searching results: ' + error.message, 'error', 'search');
+      }
+    };
+
+    function displaySearchResults(examData) {
+      const container = document.getElementById('search-results-container');
+      
+      const resultsArray = Object.values(examData.results);
+      
+      container.innerHTML = `
+        <div class="results-container">
+          <div class="results-header">
+            <div class="results-title">${examData.examName}</div>
+            <div class="results-subtitle">Class: ${examData.className} | Total Marks: ${examData.totalMarks} | Teacher: ${examData.teacherName}</div>
+          </div>
+          
+          <table class="results-table">
+            <thead>
+              <tr>
+                <th>Student ID</th>
+                <th>Student Name</th>
+                <th>Email</th>
+                <th>Marks Obtained</th>
+                <th>Percentage</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${resultsArray.map(result => `
+                <tr>
+                  <td>${result.studentId}</td>
+                  <td>${result.name}</td>
+                  <td>${result.email || 'N/A'}</td>
+                  <td>${result.marks}/${result.totalMarks}</td>
+                  <td>${result.percentage}%</td>
+                  <td>
+                    <button class="edit-marks-btn" onclick="openEditModal('${Object.keys(examData.results).find(key => examData.results[key] === result)}', '${result.name}', ${result.marks})">
+                      Edit
+                    </button>
+                  </td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      `;
+      
+      showMessage('Results loaded successfully!', 'success', 'search');
+    }
+
+    window.openEditModal = function(studentId, studentName, currentMarks) {
+      const modal = document.getElementById('editModal');
+      const container = document.getElementById('edit-form-container');
+      
+      container.innerHTML = `
+        <div class="form-group">
+          <label class="form-label">Student: ${studentName}</label>
+          <label class="form-label">Current Marks</label>
+          <input type="number" class="form-input" id="edit-marks" value="${currentMarks}" min="0" max="${currentExamData.totalMarks}">
+        </div>
+        <button class="save-results-btn" onclick="saveEditedMarks('${studentId}')">Save Changes</button>
+      `;
+      
+      modal.style.display = 'block';
+    };
+
+    window.closeEditModal = function() {
+      document.getElementById('editModal').style.display = 'none';
+    };
+
+    window.saveEditedMarks = async function(studentId) {
+      const newMarks = document.getElementById('edit-marks').value;
+      
+      if (!newMarks || newMarks < 0 || newMarks > currentExamData.totalMarks) {
+        showMessage(`Please enter valid marks (0-${currentExamData.totalMarks})`, 'error', 'search');
+        return;
+      }
+
+      try {
+        const updatedResults = { ...currentExamData.results };
+        updatedResults[studentId].marks = parseInt(newMarks);
+        updatedResults[studentId].percentage = ((parseInt(newMarks) / currentExamData.totalMarks) * 100).toFixed(2);
+
+        await updateDoc(doc(db, 'exam-results', currentExamData.id), {
+          results: updatedResults,
+          updatedAt: new Date().toISOString()
+        });
+
+        currentExamData.results = updatedResults;
+        displaySearchResults(currentExamData);
+        closeEditModal();
+        
+        showMessage('Marks updated successfully!', 'success', 'search');
+        debug('Marks updated successfully');
+        
+      } catch (error) {
+        debug(`Error updating marks: ${error.message}`);
+        showMessage('Error updating marks: ' + error.message, 'error', 'search');
+      }
+    };
+
+    function showMessage(text, type, section) {
+      const container = document.getElementById(`message-container-${section}`);
+      container.innerHTML = `<div class="message ${type}">${text}</div>`;
+      
+      if (type === 'success') {
+        setTimeout(() => {
+          container.innerHTML = '';
+        }, 3000);
+      }
+    }
+
+    // Close modal when clicking outside
+    window.onclick = function(event) {
+      const modal = document.getElementById('editModal');
+      if (event.target === modal) {
+        closeEditModal();
+      }
+    };
+
+    // Load selected classes on page load
+    window.addEventListener('load', function() {
+      setTimeout(() => {
+        if (teachingClasses.length > 0) {
+          teachingClasses.forEach(className => {
+            const option = document.querySelector(`[data-class="${className}"]`);
+            if (option) {
+              option.classList.add('selected');
+            }
+          });
+        }
+      }, 1000);
+    });
+  </script>
+</body>
+</html>

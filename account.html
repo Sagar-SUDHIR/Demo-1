@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account - Vidyasshree Shikshana Kendra</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(-45deg, #ff8c42, #ff6b1a, #ff9f68, #ff7530);
+      background-size: 400% 400%;
+      animation: gradientBG 12s ease infinite;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Top User Type Buttons */
+    .user-type-top {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      display: flex;
+      gap: 1rem;
+      z-index: 1000;
+      animation: fadeIn 1.5s ease forwards;
+    }
+    .user-type-card {
+      background: #fff;
+      border: 2px solid #e1e8ed;
+      border-radius: 20px;
+      padding: 0.5rem 1rem;
+      cursor: pointer;
+      font-weight: bold;
+      transition: all 0.3s ease, transform 0.2s ease;
+    }
+    .user-type-card:hover {
+      border-color: #ff8c42;
+      box-shadow: 0 5px 15px rgba(255,140,66,0.3);
+      transform: scale(1.05);
+    }
+    .user-type-radio { display: none; }
+    .user-type-radio:checked + .user-type-card {
+      background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+      color: #fff;
+      border-color: #ff8c42;
+      box-shadow: 0 0 12px rgba(255,140,66,0.6);
+    }
+
+    /* Container */
+    .auth-container {
+      background: #fff;
+      border-radius: 20px;
+      padding: 2rem;
+      width: 90%;
+      max-width: 450px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+      opacity: 0;
+      transform: translateY(30px);
+      animation: fadeUp 1.2s ease forwards 0.4s;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Tabs */
+    .form-tabs { display: flex; margin-bottom: 1rem; overflow: hidden; border-radius: 12px; }
+    .tab-button {
+      flex: 1; border: none; cursor: pointer; padding: 0.75rem;
+      background: #eee; font-weight: bold;
+      transition: all 0.3s ease;
+    }
+    .tab-button.active {
+      background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+      color: #fff;
+      box-shadow: inset 0 0 10px rgba(255,255,255,0.5);
+    }
+
+    /* Forms */
+    .auth-form { display: none; animation: slideFade 0.5s ease; }
+    .auth-form.active { display: block; }
+    .form-group { margin-bottom: 1rem; }
+    .form-input {
+      width: 100%; padding: 0.75rem; border: 2px solid #ddd; border-radius: 10px;
+      transition: border 0.3s ease, box-shadow 0.3s ease;
+    }
+    .form-input:focus {
+      border-color: #ff8c42;
+      box-shadow: 0 0 8px rgba(255,140,66,0.4);
+      outline: none;
+    }
+
+    @keyframes slideFade {
+      from { opacity: 0; transform: translateX(-20px); }
+      to { opacity: 1; transform: translateX(0); }
+    }
+
+    /* Submit Button */
+    .submit-btn {
+      width: 100%;
+      background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+      color: #fff !important;
+      border: none;
+      padding: 1rem;
+      border-radius: 25px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    .submit-btn::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 100%;
+      top: 0;
+      left: 0;
+      background: rgba(255,255,255,0.3);
+      transition: width 0.4s ease;
+      z-index: 1;
+    }
+    .submit-btn:hover::after { width: 100%; }
+    .submit-btn span { position: relative; z-index: 2; }
+
+    /* Messages */
+    .error-message { color: #e74c3c; margin-bottom: 1rem; animation: fadeIn 0.5s ease; }
+    .success-message { color: #2ecc71; margin-bottom: 1rem; animation: fadeIn 0.5s ease; }
+    .warning-message { color: #f39c12; margin-bottom: 1rem; animation: fadeIn 0.5s ease; }
+
+    /* Admin Notice */
+    .admin-notice {
+      background: linear-gradient(45deg, rgba(255, 140, 66, 0.1), rgba(255, 107, 26, 0.1));
+      border: 2px solid #ff8c42;
+      border-radius: 15px;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    .admin-notice h4 {
+      color: #ff8c42;
+      margin-bottom: 0.5rem;
+    }
+    .admin-notice p {
+      color: #666;
+      font-size: 0.9rem;
+    }
+
+    /* Pending Status */
+    .pending-status {
+      background: #fff;
+      border-radius: 20px;
+      padding: 3rem 2rem;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    }
+    .pending-status h2 {
+      color: #ff8c42;
+      margin-bottom: 1rem;
+    }
+    .pending-status p {
+      color: #666;
+      margin-bottom: 2rem;
+    }
+    .home-btn {
+      background: linear-gradient(135deg, #ff8c42, #ff6b1a);
+      color: white;
+      padding: 12px 24px;
+      border: none;
+      border-radius: 25px;
+      text-decoration: none;
+      display: inline-block;
+      transition: all 0.3s ease;
+      font-weight: 600;
+    }
+    .home-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(255, 140, 66, 0.4);
+    }
+
+    /* Debug Info */
+    .debug-info {
+      position: fixed;
+      bottom: 10px;
+      left: 10px;
+      background: rgba(0,0,0,0.8);
+      color: white;
+      padding: 10px;
+      border-radius: 5px;
+      font-size: 12px;
+      max-width: 300px;
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Buttons -->
+  <div class="user-type-top">
+    <div class="user-type-option">
+      <input type="radio" id="parent" name="userType" value="parent" class="user-type-radio">
+      <label for="parent" class="user-type-card">Parent</label>
+    </div>
+    <div class="user-type-option">
+      <input type="radio" id="student" name="userType" value="student" class="user-type-radio" checked>
+      <label for="student" class="user-type-card">Student</label>
+    </div>
+    <div class="user-type-option">
+      <input type="radio" id="admin" name="userType" value="admin" class="user-type-radio">
+      <label for="admin" class="user-type-card">Teacher</label>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div class="auth-container" id="authContainer">
+    <!-- Tabs -->
+    <div class="form-tabs">
+      <button type="button" class="tab-button active" data-tab="signin">Sign In</button>
+      <button type="button" class="tab-button" data-tab="signup">Sign Up</button>
+    </div>
+
+    <!-- Messages -->
+    <div id="message-container"></div>
+
+    <!-- Sign In Form -->
+    <form id="signin-form" class="auth-form active">
+      <div class="form-group">
+        <input type="email" id="signin-email" class="form-input" placeholder="Enter your email" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="signin-password" class="form-input" placeholder="Enter your password" required>
+      </div>
+      <button type="submit" class="submit-btn"><span class="btn-text">Sign In</span></button>
+    </form>
+
+    <!-- Sign Up Form -->
+    <form id="signup-form" class="auth-form">
+      <!-- Admin Notice (shown only when admin is selected) -->
+      <div class="admin-notice" id="admin-notice" style="display: none;">
+        <h4>Teacher Account Request</h4>
+        <p>Your teacher account will need approval from the Super Admin before you can access the admin panel.</p>
+      </div>
+
+      <div class="form-group"><input type="text" id="signup-name" class="form-input" placeholder="Full Name" required></div>
+      <div class="form-group"><input type="email" id="signup-email" class="form-input" placeholder="Email" required></div>
+      <div class="form-group"><input type="tel" id="signup-phone" class="form-input" placeholder="Phone" required></div>
+      
+      <!-- Admin-specific fields -->
+      <div class="form-group" id="teacher-subject-group" style="display:none;">
+        <input type="text" id="signup-teacher-subject" class="form-input" placeholder="Subject/Department">
+      </div>
+      <div class="form-group" id="teacher-qualification-group" style="display:none;">
+        <input type="text" id="signup-teacher-qualification" class="form-input" placeholder="Qualification">
+      </div>
+      
+      <div class="form-group" id="student-id-group" style="display:none;">
+        <input type="text" id="signup-student-id" class="form-input" placeholder="Student ID">
+      </div>
+      <div class="form-group" id="child-name-group" style="display:none;">
+        <input type="text" id="signup-child-name" class="form-input" placeholder="Child Name">
+      </div>
+      
+      <div class="form-group"><input type="password" id="signup-password" class="form-input" placeholder="Password" required></div>
+      <div class="form-group"><input type="password" id="signup-confirm-password" class="form-input" placeholder="Confirm Password" required></div>
+      <button type="submit" class="submit-btn"><span class="btn-text">Create Account</span></button>
+    </form>
+  </div>
+
+  <!-- Pending Status Screen -->
+  <div class="pending-status" id="pendingStatus" style="display: none;">
+    <h2>Account Pending Approval</h2>
+    <p>Your teacher account request has been submitted and is waiting for Super Admin approval. You will be notified once your account is approved.</p>
+    <a href="index.html" class="home-btn">Return to Home</a>
+  </div>
+
+  <!-- Debug Info -->
+  <div class="debug-info" id="debugInfo"></div>
+
+  <!-- Firebase SDK -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, updateProfile } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
+    import { getFirestore, doc, setDoc, getDoc, addDoc, collection } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAp5yz00tXRKLhBIQoYq4sKIiFrjHzUsmY",
+      authDomain: "vidhyashree-mlr.firebaseapp.com",
+      projectId: "vidhyashree-mlr",
+      storageBucket: "vidhyashree-mlr.firebasestorage.app",
+      messagingSenderId: "469584837803",
+      appId: "1:469584837803:web:b1a9355fb0661c32ba8bee",
+      measurementId: "G-LYEYRP433X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const tabButtons = document.querySelectorAll('.tab-button');
+    const authForms = document.querySelectorAll('.auth-form');
+    const userTypeRadios = document.querySelectorAll('input[name="userType"]');
+    const studentIdGroup = document.getElementById('student-id-group');
+    const childNameGroup = document.getElementById('child-name-group');
+    const teacherSubjectGroup = document.getElementById('teacher-subject-group');
+    const teacherQualificationGroup = document.getElementById('teacher-qualification-group');
+    const adminNotice = document.getElementById('admin-notice');
+    const messageContainer = document.getElementById('message-container');
+    const debugInfo = document.getElementById('debugInfo');
+
+    // Debug function
+    function debug(message) {
+      console.log('DEBUG:', message);
+      debugInfo.innerHTML = `${new Date().toLocaleTimeString()}: ${message}`;
+      debugInfo.style.display = 'block';
+    }
+
+    // Tab switching
+    tabButtons.forEach(btn => btn.addEventListener('click', () => {
+      tabButtons.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      authForms.forEach(f => f.classList.remove('active'));
+      document.getElementById(btn.dataset.tab + '-form').classList.add('active');
+    }));
+
+    // User type change handler
+    userTypeRadios.forEach(r => r.addEventListener('change', () => {
+      const val = document.querySelector('input[name="userType"]:checked').value;
+      debug(`User type changed to: ${val}`);
+      
+      studentIdGroup.style.display = val === 'student' ? 'block' : 'none';
+      childNameGroup.style.display = val === 'parent' ? 'block' : 'none';
+      teacherSubjectGroup.style.display = val === 'admin' ? 'block' : 'none';
+      teacherQualificationGroup.style.display = val === 'admin' ? 'block' : 'none';
+      adminNotice.style.display = val === 'admin' ? 'block' : 'none';
+    }));
+
+    // Trigger initial user type setup
+    document.querySelector('input[name="userType"]:checked').dispatchEvent(new Event('change'));
+
+    // Sign In Handler
+    document.getElementById('signin-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      try {
+        const email = document.getElementById('signin-email').value.trim();
+        const password = document.getElementById('signin-password').value;
+        const userType = document.querySelector('input[name="userType"]:checked').value;
+
+        debug(`Sign in attempt - Email: ${email}, UserType: ${userType}`);
+        showMessage("Signing in...", "success");
+
+        const cred = await signInWithEmailAndPassword(auth, email, password);
+        debug(`Firebase auth successful for: ${cred.user.uid}`);
+
+        const userDoc = await getDoc(doc(db, 'users', cred.user.uid));
+        
+        if (!userDoc.exists()) {
+          debug(`User document not found for: ${cred.user.uid}`);
+          throw new Error("User data not found. Please contact support.");
+        }
+
+        const userData = userDoc.data();
+        debug(`User data retrieved: ${JSON.stringify(userData)}`);
+
+        // Check if user type matches (with flexible validation)
+        if (userData.userType !== userType) {
+          debug(`UserType mismatch: stored=${userData.userType}, selected=${userType}`);
+          throw new Error(`This account is registered as ${userData.userType}. Please select the correct user type.`);
+        }
+
+        // Store login session with additional info
+        localStorage.setItem('loggedInUserEmail', email);
+        localStorage.setItem('loggedInUserName', userData.name || 'User');
+        localStorage.setItem('loggedInUserId', cred.user.uid);
+        localStorage.setItem('loggedInUserType', userType);
+        localStorage.setItem('isLoggedIn', 'true');
+
+        debug(`Session data stored for ${userType}`);
+
+        // Handle different user types
+        if (userType === 'admin') {
+          debug(`Admin login - Status: ${userData.adminStatus}`);
+          
+          if (userData.adminStatus === 'pending') {
+            showPendingScreen();
+            return;
+          } else if (userData.adminStatus === 'approved') {
+            showMessage("Login successful! Redirecting to admin panel...", "success");
+            setTimeout(() => { window.location.href = 'admin.html'; }, 1500);
+            return;
+          } else if (userData.adminStatus === 'rejected') {
+            throw new Error("Your admin account request was rejected. Please contact Super Admin.");
+          } else {
+            throw new Error("Admin account not properly configured. Please contact support.");
+          }
+        } else if (userType === 'student') {
+          debug(`Student login successful - redirecting to student.html`);
+          showMessage("Login successful! Redirecting to student portal...", "success");
+          setTimeout(() => { window.location.href = 'student.html'; }, 1500);
+          return;
+        } else if (userType === 'parent') {
+          debug(`Parent login successful - redirecting to parent.html`);
+          showMessage("Login successful! Redirecting to parent portal...", "success");
+          setTimeout(() => { window.location.href = 'parent.html'; }, 1500);
+          return;
+        }
+
+      } catch (err) { 
+        debug(`Sign in error: ${err.message}`);
+        showMessage(err.message, "error"); 
+      }
+    });
+
+    // Sign Up Handler
+    document.getElementById('signup-form').addEventListener('submit', async e => {
+      e.preventDefault();
+      try {
+        const name = document.getElementById('signup-name').value.trim();
+        const email = document.getElementById('signup-email').value.trim();
+        const phone = document.getElementById('signup-phone').value.trim();
+        const password = document.getElementById('signup-password').value;
+        const confirmPassword = document.getElementById('signup-confirm-password').value;
+        const userType = document.querySelector('input[name="userType"]:checked').value;
+        const studentId = document.getElementById('signup-student-id').value.trim();
+        const childName = document.getElementById('signup-child-name').value.trim();
+        const teacherSubject = document.getElementById('signup-teacher-subject').value.trim();
+        const teacherQualification = document.getElementById('signup-teacher-qualification').value.trim();
+
+        debug(`Sign up attempt - Email: ${email}, UserType: ${userType}`);
+
+        if (password !== confirmPassword) {
+          throw new Error("Passwords do not match");
+        }
+
+        if (userType === 'student' && !studentId) {
+          throw new Error("Student ID is required for student accounts");
+        }
+
+        if (userType === 'parent' && !childName) {
+          throw new Error("Child name is required for parent accounts");
+        }
+
+        if (userType === 'admin' && (!teacherSubject || !teacherQualification)) {
+          throw new Error("Subject and qualification are required for teacher accounts");
+        }
+
+        showMessage("Creating account...", "success");
+
+        const cred = await createUserWithEmailAndPassword(auth, email, password);
+        await updateProfile(cred.user, { displayName: name });
+
+        debug(`Firebase account created for: ${cred.user.uid}`);
+
+        // Prepare user data based on type
+        const userData = {
+          name, 
+          email, 
+          phone, 
+          userType, 
+          createdAt: new Date().toISOString(),
+          accountStatus: 'active' // Default status for all accounts
+        };
+
+        // Add type-specific fields
+        if (userType === 'student') {
+          userData.studentId = studentId;
+        } else if (userType === 'parent') {
+          userData.childName = childName;
+        } else if (userType === 'admin') {
+          userData.subject = teacherSubject;
+          userData.qualification = teacherQualification;
+          userData.adminStatus = 'pending'; // Admin accounts need approval
+          userData.accountStatus = 'pending'; // Override for admin
+        }
+
+        debug(`Saving user data: ${JSON.stringify(userData)}`);
+
+        // Save user to users collection
+        await setDoc(doc(db, 'users', cred.user.uid), userData);
+
+        // If admin, also create approval request
+        if (userType === 'admin') {
+          await addDoc(collection(db, 'admin-requests'), {
+            userId: cred.user.uid,
+            name,
+            email,
+            phone,
+            subject: teacherSubject,
+            qualification: teacherQualification,
+            status: 'pending',
+            requestedAt: new Date().toISOString(),
+            requestedDate: new Date().toLocaleDateString()
+          });
+
+          showMessage("Teacher account created! Waiting for Super Admin approval...", "success");
+          setTimeout(() => { showPendingScreen(); }, 2000);
+          return;
+        }
+
+        // For non-admin accounts, proceed with login
+        localStorage.setItem('loggedInUserEmail', email);
+        localStorage.setItem('loggedInUserName', name);
+        localStorage.setItem('loggedInUserId', cred.user.uid);
+        localStorage.setItem('loggedInUserType', userType);
+        localStorage.setItem('isLoggedIn', 'true');
+
+        debug(`Account created and session stored for ${userType}`);
+
+        showMessage("Account created successfully! Redirecting...", "success");
+        setTimeout(() => { 
+          window.location.href = userType + ".html"; 
+        }, 1500);
+
+      } catch (err) { 
+        debug(`Sign up error: ${err.message}`);
+        showMessage(err.message, "error"); 
+      }
+    });
+
+    function showPendingScreen() {
+      document.getElementById('authContainer').style.display = 'none';
+      document.getElementById('pendingStatus').style.display = 'block';
+    }
+
+    function showMessage(msg, type) {
+      messageContainer.innerHTML = `<div class="${type}-message">${msg}</div>`;
+      
+      // Auto-clear success messages
+      if (type === 'success') {
+        setTimeout(() => {
+          if (messageContainer.innerHTML.includes(msg)) {
+            messageContainer.innerHTML = '';
+          }
+        }, 5000);
+      }
+    }
+
+    // Clear debug info after 10 seconds
+    setTimeout(() => {
+      debugInfo.style.display = 'none';
+    }, 10000);
+  </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.waves.min.js"></script>
+
+  <script>
+    VANTA.WAVES({
+      el: "body",
+      mouseControls: true,
+      touchControls: true,
+      minHeight: 200.00,
+      minWidth: 200.00,
+      scale: 1.00,
+      scaleMobile: 1.00,
+      color: 0xff6b1a,
+      shininess: 50.00,
+      waveHeight: 20.00,
+      waveSpeed: 0.80,
+      zoom: 1.10
+    });
+  </script>
+
+</body>
+</html>
